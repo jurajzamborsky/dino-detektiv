@@ -133,6 +133,20 @@
     .cmp-summary-icon{font-size:2rem;flex-shrink:0}
     .cmp-summary-title{font-family:'Bebas Neue',cursive;font-size:.95rem;color:#f9c74f;font-weight:700;margin-bottom:6px}
     .cmp-summary-text{font-size:.93rem;line-height:1.6}
+    .fc{cursor:pointer;transition:transform .15s,box-shadow .15s}
+    .fc:active{transform:scale(.97)}
+    .fc-speak{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1.5px solid rgba(139,94,60,.15)}
+    .fc-speak-btn{border:none;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;border-radius:50px;padding:8px 20px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 3px 10px rgba(245,166,35,.4)}
+    .fc-speak-btn:active{transform:scale(.95)}
+    .fc-speak-btn.playing{background:linear-gradient(135deg,#4caf76,#2d8a52);box-shadow:0 3px 10px rgba(76,175,118,.4)}
+    .fc-speak-btn.loading{opacity:.7;cursor:not-allowed}
+    @keyframes soundWave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
+    .wave{display:inline-flex;gap:2px;align-items:center;height:14px}
+    .wave span{display:inline-block;width:3px;background:#fff;border-radius:2px;height:8px}
+    .wave span:nth-child(1){animation:soundWave .6s ease-in-out 0s infinite}
+    .wave span:nth-child(2){animation:soundWave .6s ease-in-out .1s infinite}
+    .wave span:nth-child(3){animation:soundWave .6s ease-in-out .2s infinite}
+    .wave span:nth-child(4){animation:soundWave .6s ease-in-out .1s infinite}
 
 
 
@@ -196,7 +210,7 @@
       <div id="alert-error1" class="alert alert-err hidden">
         <div class="alert-icon">😅</div>
         <div class="alert-title">Ups! Niečo sa pokazilo.</div>
-        <div class="alert-sub">Skús znova!</div>
+        <div class="alert-sub" id="error-msg">Skús znova!</div>
       </div>
 
       <!-- Results -->
@@ -395,6 +409,29 @@ function init(){
 }
 
 // ─── File handling ────────────────────────────────────────────────────────────
+function resizeImage(file, callback){
+  const MAX = 1024;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > MAX || h > MAX){
+        if(w > h){ h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      const [hdr, b64] = dataUrl.split(",");
+      callback({ base64: b64, mediaType: "image/jpeg" });
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function onFile1(input){
   const file = input.files[0];
   if(!file) return;
@@ -405,13 +442,7 @@ function onFile1(input){
   show("btn-scan1");
   hide("alert-notdino"); hide("alert-error1"); hide("results1"); hide("loading1");
   dino1 = null;
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const [h, b] = e.target.result.split(",");
-    imgData1 = { base64: b, mediaType: h.match(/:(.*?);/)[1] };
-  };
-  reader.readAsDataURL(file);
+  resizeImage(file, data => { imgData1 = data; });
   input.value = "";
 }
 
@@ -425,13 +456,7 @@ function onFile2(input){
   show("btn-scan2");
   hide("alert-notdino2"); hide("cmp-results"); hide("loading2");
   dino2 = null;
-
-  const reader = new FileReader();
-  reader.onload = e => {
-    const [h, b] = e.target.result.split(",");
-    imgData2 = { base64: b, mediaType: h.match(/:(.*?);/)[1] };
-  };
-  reader.readAsDataURL(file);
+  resizeImage(file, data => { imgData2 = data; });
   input.value = "";
 }
 
@@ -470,6 +495,7 @@ async function scan1(){
 
   } catch(e){
     console.error(e);
+    $("error-msg").textContent = e.message || JSON.stringify(e);
     hide("loading1"); show("alert-error1"); show("btn-scan1");
   }
 }
@@ -492,7 +518,20 @@ function showResults1(){
     if(dino1[f.key]){
       const div = document.createElement("div");
       div.className = "fc";
-      div.innerHTML = `<div class="fc-row"><span class="fc-icon">${f.icon}</span><div><div class="fc-label">${f.label}</div><div class="fc-text">${dino1[f.key]}</div></div></div>`;
+      const btnId = "speak-"+i;
+      div.innerHTML = `
+        <div class="fc-row">
+          <span class="fc-icon">${f.icon}</span>
+          <div style="flex:1">
+            <div class="fc-label">${f.label}</div>
+            <div class="fc-text">${dino1[f.key]}</div>
+          </div>
+        </div>
+        <div class="fc-speak">
+          <button class="fc-speak-btn" id="${btnId}" onclick="speakText('${dino1[f.key].replace(/'/g,"\'")}', '${dino1.roar_type}', this)">
+            🔊 <span>Prečítať</span>
+          </button>
+        </div>`;
       $("fact-cards").appendChild(div);
     }
     i++;
@@ -603,6 +642,54 @@ function addBubble(containerId, q, a){
 function updateLastBubble(containerId, a){
   const bubbles = $(containerId).querySelectorAll(".bubble-a");
   if(bubbles.length) bubbles[bubbles.length-1].textContent = "🦖 " + a;
+}
+
+// ─── TTS ──────────────────────────────────────────────────────────────────────
+let currentAudio = null;
+
+async function speakText(text, roar_type, btnEl) {
+  // Stop any playing audio
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+
+  // If same button is playing, just stop
+  if (btnEl.classList.contains("playing")) {
+    btnEl.classList.remove("playing");
+    btnEl.innerHTML = '🔊 <span>Prečítať</span>';
+    return;
+  }
+
+  // Reset all other buttons
+  document.querySelectorAll(".fc-speak-btn.playing").forEach(b => {
+    b.classList.remove("playing");
+    b.innerHTML = '🔊 <span>Prečítať</span>';
+  });
+
+  btnEl.classList.add("loading");
+  btnEl.innerHTML = '<div class="wave"><span></span><span></span><span></span><span></span></div> <span>Načítavam…</span>';
+
+  try {
+    const res = await fetch("/api/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, roar_type: roar_type || "deep" })
+    });
+    if (!res.ok) throw new Error("Chyba");
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    currentAudio = new Audio(url);
+    currentAudio.play();
+    btnEl.classList.remove("loading");
+    btnEl.classList.add("playing");
+    btnEl.innerHTML = '<div class="wave"><span></span><span></span><span></span><span></span></div> <span>Hrá…</span>';
+    currentAudio.onended = () => {
+      btnEl.classList.remove("playing");
+      btnEl.innerHTML = '🔊 <span>Prečítať</span>';
+      currentAudio = null;
+    };
+  } catch(e) {
+    btnEl.classList.remove("loading");
+    btnEl.innerHTML = '🔊 <span>Prečítať</span>';
+  }
 }
 
 // ─── Roar ─────────────────────────────────────────────────────────────────────
