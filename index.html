@@ -2,246 +2,700 @@
 <html lang="sk">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="description" content="Odfotí hračku alebo obrázok dinosaura a zistí všetko o ňom. Pre deti od 3 rokov."/>
-  <meta property="og:title" content="Dino Detektív 🦖"/>
-  <meta property="og:description" content="Odfotí dinosaura → zistí čo jedol, kde žil, aký bol veľký a vypočuješ si ako reval!"/>
-  <meta property="og:image" content="/icon-512.png"/>
-  <title>Dino Detektív 🦖</title>
-  <link rel="icon" href="/icon-192.png"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Dino Detektív"/>
+  <meta name="theme-color" content="#0a2215"/>
+  <title>Dino Detektív</title>
+  <link rel="manifest" href="/public/manifest.json"/>
+  <link rel="apple-touch-icon" href="/icon-192.png"/>
+
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap');
-    *{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --green-deep:#0a2215;
-      --green-mid:#163520;
-      --gold:#f9c74f;
-      --gold-dim:rgba(249,199,79,.7);
-      --text:rgba(249,237,217,.85);
-      --text-dim:rgba(249,237,217,.5);
-    }
-    html{scroll-behavior:smooth}
-    body{font-family:'Nunito',sans-serif;background:var(--green-deep);color:var(--text);overflow-x:hidden}
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html,body{height:100%;background:#0a2215}
+    body{font-family:'Nunito',sans-serif;color:#f9edd9;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
 
-    @keyframes dinoHop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
-    @keyframes fadeUp{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
-    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-    @keyframes roarShake{0%,100%{transform:scale(1) rotate(0)}20%{transform:scale(1.12) rotate(-3deg)}40%{transform:scale(1.1) rotate(3deg)}60%{transform:scale(1.06) rotate(-1deg)}}
-    @keyframes starFloat{0%{opacity:0;transform:translateY(0) scale(0)}30%{opacity:1}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
+    @keyframes bounceIn{0%{transform:translateY(36px) scale(.78);opacity:0}65%{transform:translateY(-7px) scale(1.04);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
+    @keyframes roarShake{0%,100%{transform:scale(1) rotate(0)}10%{transform:scale(1.10) rotate(-3deg)}20%{transform:scale(1.13) rotate(3deg)}35%{transform:scale(1.09) rotate(-2deg)}50%{transform:scale(1.06) rotate(2deg)}70%{transform:scale(1.03) rotate(-1deg)}}
+    @keyframes dinoHop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    @keyframes blink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+    @keyframes fadeSlide{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ── HERO ── */
-    .hero{
-      min-height:100vh;
-      background:linear-gradient(160deg,#0a2215 0%,#163520 60%,#0e2a1a 100%);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;padding:40px 20px;position:relative;overflow:hidden;
-    }
-    .hero::before{
-      content:"";position:absolute;inset:0;
-      background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(249,199,79,.06) 0%, transparent 70%);
-      pointer-events:none;
-    }
-    .hero-dino{font-size:clamp(5rem,18vw,9rem);animation:dinoHop 1.8s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
-    .hero-tag{display:inline-block;background:rgba(249,199,79,.15);border:1.5px solid rgba(249,199,79,.35);border-radius:50px;padding:6px 20px;font-size:.85rem;font-weight:700;color:var(--gold-dim);letter-spacing:4px;text-transform:uppercase;margin-bottom:16px}
-    .hero-title{font-family:'Bebas Neue',cursive;font-size:clamp(3rem,12vw,7rem);font-weight:700;color:var(--gold);text-shadow:0 4px 20px rgba(0,0,0,.5);line-height:1;margin-bottom:8px}
-    .hero-sub{font-size:clamp(1rem,3vw,1.4rem);color:var(--text-dim);max-width:520px;line-height:1.7;margin:0 auto 36px}
-    .hero-sub strong{color:var(--text)}
+    #app{min-height:100vh;background:linear-gradient(160deg,#0a2215 0%,#163520 55%,#0c1e14 100%);padding-bottom:40px}
 
-    .btn-cta{
-      display:inline-block;font-family:'Bebas Neue',cursive;font-size:1.4rem;font-weight:700;
-      background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;
-      border:none;border-radius:60px;padding:18px 48px;cursor:pointer;
-      box-shadow:0 8px 30px rgba(245,166,35,.5);
-      text-decoration:none;animation:pulse 2.5s ease-in-out infinite;
-      transition:transform .2s;
-    }
-    .btn-cta:hover{transform:scale(1.05);animation:none}
-    .hero-note{margin-top:16px;font-size:.85rem;color:var(--text-dim)}
+    .header{text-align:center;padding:30px 20px 16px}
+    .header-dino{font-size:3.6rem;display:inline-block;animation:dinoHop 1.6s ease-in-out infinite}
+    .header-title{font-family:'Bebas Neue',cursive;font-size:clamp(2rem,10vw,3.2rem);font-weight:700;color:#f9c74f;text-shadow:0 3px 12px rgba(0,0,0,.45);letter-spacing:4px;line-height:1.05;margin-top:4px}
+    .header-sub{margin-top:6px;color:rgba(249,237,217,.6);font-size:.95rem;font-weight:600}
 
-    /* ── FEATURES ── */
-    .features{padding:80px 20px;background:linear-gradient(180deg,#0a2215,#0d1f12)}
-    .section-title{font-family:'Bebas Neue',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold);text-align:center;margin-bottom:48px}
-    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:900px;margin:0 auto}
-    .feat-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(249,199,79,.18);border-radius:24px;padding:28px 24px;transition:border-color .25s}
-    .feat-card:hover{border-color:rgba(249,199,79,.45)}
-    .feat-icon{font-size:2.8rem;margin-bottom:12px}
-    .feat-title{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:var(--gold);font-weight:700;margin-bottom:8px}
-    .feat-text{font-size:.95rem;color:var(--text-dim);line-height:1.65}
+    .wrap{max-width:500px;margin:0 auto;padding:0 16px}
 
-    /* ── HOW IT WORKS ── */
-    .how{padding:80px 20px;background:#0a2215}
-    .steps{display:flex;flex-direction:column;gap:0;max-width:580px;margin:0 auto}
-    .step{display:flex;gap:20px;position:relative;padding-bottom:36px}
-    .step:last-child{padding-bottom:0}
-    .step:not(:last-child)::after{content:"";position:absolute;left:27px;top:56px;bottom:0;width:2px;background:rgba(249,199,79,.2)}
-    .step-num{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#e07310);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',cursive;font-size:1.4rem;font-weight:700;flex-shrink:0;box-shadow:0 4px 16px rgba(245,166,35,.4)}
-    .step-body{padding-top:8px}
-    .step-title{font-family:'Bebas Neue',cursive;font-size:1.15rem;color:var(--gold);font-weight:700;margin-bottom:6px}
-    .step-text{font-size:.93rem;color:var(--text-dim);line-height:1.6}
+    /* Buttons */
+    .btn-scan{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:700;padding:16px;cursor:pointer;box-shadow:0 6px 22px rgba(245,166,35,.45);transition:all .2s;display:block;text-align:center;-webkit-appearance:none}
+    .btn-scan:active{transform:scale(.96)}
+    .btn-roar{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#d43b28,#b02619);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.45rem;font-weight:700;padding:18px;cursor:pointer;box-shadow:0 6px 22px rgba(212,59,40,.55);transition:all .2s;-webkit-appearance:none}
+    .btn-roar.roaring{animation:roarShake .4s ease-in-out}
+    .btn-roar:active{transform:scale(.96)}
+    .btn-compare{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#5b6af0,#3b4bcc);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.15rem;font-weight:700;padding:14px;cursor:pointer;box-shadow:0 6px 22px rgba(91,106,240,.45);-webkit-appearance:none}
+    .btn-compare:active{transform:scale(.96)}
+    .btn-ghost{width:100%;background:transparent;border:2px solid rgba(249,237,217,.3);color:rgba(249,237,217,.65);border-radius:60px;font-family:'Nunito',sans-serif;font-size:.95rem;padding:11px;cursor:pointer;-webkit-appearance:none}
+    .btn-ghost:active{background:rgba(249,237,217,.08)}
+    .btn-roar-sm{flex:1;border:none;border-radius:60px;color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;font-weight:700;padding:13px 8px;cursor:pointer;-webkit-appearance:none}
+    .btn-roar-sm:active{transform:scale(.95)}
+    .mb12{margin-bottom:12px}
+    .mb14{margin-bottom:14px}
+    .mb16{margin-bottom:16px}
+    .mb20{margin-bottom:20px}
 
-    /* ── SHOWCASE ── */
-    .showcase{padding:80px 20px;background:linear-gradient(180deg,#0d1f12,#0a2215)}
-    .facts-demo{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:800px;margin:0 auto}
-    .fact-demo-card{background:linear-gradient(135deg,#faf3e2,#f4e8cc);border-radius:18px;padding:14px 16px;color:#2a1505;border-left:5px solid #f5a623}
-    .fact-demo-row{display:flex;align-items:center;gap:10px}
-    .fact-demo-icon{font-size:1.6rem;flex-shrink:0}
-    .fact-demo-label{font-family:'Bebas Neue',cursive;font-size:.8rem;color:#8b5e3c;font-weight:600}
-    .fact-demo-text{font-size:.88rem;font-weight:700;color:#2a1505;line-height:1.4}
+    /* Upload zone */
+    .uz{border:3px dashed rgba(249,199,79,.45);border-radius:28px;text-align:center;padding:44px 20px;cursor:pointer;transition:all .25s;display:block;width:100%}
+    .uz:active{border-color:rgba(249,199,79,.9);background:rgba(249,199,79,.06)}
+    .uz2{border:3px dashed rgba(100,200,255,.45);border-radius:28px;text-align:center;padding:36px 20px;cursor:pointer;transition:all .25s;display:block;width:100%}
+    .uz2:active{border-color:rgba(100,200,255,.9);background:rgba(100,200,255,.06)}
+    .uz-icon{font-size:4rem;margin-bottom:12px;display:block;animation:dinoHop 1.4s ease-in-out infinite}
+    .uz-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:600}
+    .uz-sub{margin-top:8px;color:rgba(249,237,217,.5);font-size:.9rem}
 
-    /* ── CTA BOTTOM ── */
-    .cta-bottom{padding:80px 20px;text-align:center;background:#0a2215;border-top:1px solid rgba(249,199,79,.1)}
-    .cta-bottom-title{font-family:'Bebas Neue',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold);margin-bottom:12px}
-    .cta-bottom-sub{color:var(--text-dim);font-size:1rem;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto}
+    /* Image preview */
+    .img-wrap{position:relative;margin-bottom:18px}
+    .img-preview{width:100%;border-radius:22px;max-height:260px;object-fit:cover;box-shadow:0 8px 32px rgba(0,0,0,.45);display:block}
+    .img-change{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50px;padding:7px 14px;font-size:.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:600;display:block;text-align:center}
 
-    /* ── FOOTER ── */
-    footer{padding:24px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.06);color:var(--text-dim);font-size:.82rem}
-    footer a{color:var(--gold-dim);text-decoration:none}
+    /* Fact card */
+    .fc{background:linear-gradient(135deg,#faf3e2,#f4e8cc);border-radius:20px;padding:15px 18px;color:#2a1505;box-shadow:0 4px 18px rgba(0,0,0,.22);border-left:5px solid #f5a623;animation:bounceIn .48s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:11px}
+    .fc-row{display:flex;align-items:flex-start;gap:14px}
+    .fc-icon{font-size:1.8rem;flex-shrink:0;line-height:1}
+    .fc-label{font-family:'Bebas Neue',cursive;font-size:.88rem;color:#8b5e3c;font-weight:600;margin-bottom:3px}
+    .fc-text{font-size:.95rem;font-weight:700;line-height:1.55}
 
-    /* Divider dinos */
-    .dino-divider{text-align:center;padding:20px 0;font-size:2rem;letter-spacing:16px;opacity:.25}
+    /* Name card */
+    .name-card{text-align:center;padding:22px 20px;background:rgba(249,199,79,.1);border-radius:26px;border:2px solid rgba(249,199,79,.32);animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:20px}
+    .name-emoji{font-size:4.2rem;margin-bottom:6px}
+    .name-sk{font-family:'Bebas Neue',cursive;font-size:2.2rem;color:#f9c74f;line-height:1.1}
+    .name-en{color:rgba(249,237,217,.4);font-size:.85rem;margin-top:4px;font-style:italic}
 
-    /* Animate on scroll */
-    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
-    .reveal.visible{opacity:1;transform:translateY(0)}
+    /* Loading */
+    .loading{text-align:center;padding:28px 0}
+    .loading-icons{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
+    .loading-icon{font-size:2.6rem}
+    .loading-text{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f}
+
+    /* Alerts */
+    .alert{border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:16px}
+    .alert-warn{background:rgba(249,156,21,.14);border:2px solid rgba(249,156,21,.3)}
+    .alert-err{background:rgba(200,50,40,.18);border:2px solid rgba(200,50,40,.35)}
+    .alert-icon{font-size:2.8rem;margin-bottom:10px}
+    .alert-title{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f;margin-bottom:6px}
+    .alert-sub{color:rgba(249,237,217,.7);font-size:.9rem}
+
+    /* Q&A */
+    .qa-wrap{background:rgba(255,255,255,.05);border:2px solid rgba(249,199,79,.25);border-radius:24px;padding:18px;margin-bottom:14px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both}
+    .qa-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+    .qa-header-icon{font-size:1.8rem}
+    .qa-header-title{font-family:'Bebas Neue',cursive;font-size:1.05rem;color:#f9c74f;font-weight:700}
+    .qa-header-sub{font-size:.8rem;color:rgba(249,237,217,.5)}
+    .qa-msgs{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+    .bubble-q{background:rgba(249,199,79,.18);border-radius:18px 18px 4px 18px;padding:10px 16px;color:#f9c74f;font-weight:700;font-size:.95rem}
+    .bubble-a{background:rgba(255,255,255,.1);border-radius:18px 18px 18px 4px;padding:10px 16px;color:#f9edd9;font-size:.93rem;line-height:1.55;animation:bounceIn .4s ease both}
+    .qa-input-row{display:flex;gap:8px;align-items:center}
+    .qa-input{flex:1;background:rgba(255,255,255,.08);border:2px solid rgba(249,199,79,.35);border-radius:50px;color:#f9edd9;font-family:'Nunito',sans-serif;font-size:1rem;padding:12px 18px;outline:none;-webkit-appearance:none;min-width:0}
+    .qa-input::placeholder{color:rgba(249,237,217,.4)}
+    .qa-send{border:none;border-radius:50px;background:linear-gradient(135deg,#4caf76,#2d8a52);color:#fff;font-family:'Bebas Neue',cursive;font-size:.95rem;font-weight:700;padding:12px 18px;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
+    .qa-send:disabled{opacity:.5}
+
+    /* Compare */
+    .cmp-dino1-bar{background:rgba(249,199,79,.1);border:2px solid rgba(249,199,79,.3);border-radius:20px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
+    .cmp-dino1-img{width:64px;height:64px;object-fit:cover;border-radius:12px;flex-shrink:0}
+    .cmp-vs{margin-left:auto;font-family:'Bebas Neue',cursive;font-size:1.8rem;color:rgba(249,199,79,.4)}
+    .mini-cards{display:flex;gap:10px;margin-bottom:20px;animation:bounceIn .5s ease both}
+    .mini-card{flex:1;border-radius:20px;padding:14px 12px;text-align:center;min-width:0}
+    .mini-card-amber{background:rgba(249,199,79,.12);border:2px solid rgba(249,199,79,.35)}
+    .mini-card-blue{background:rgba(100,200,255,.12);border:2px solid rgba(100,200,255,.3)}
+    .mini-card-img{width:100%;height:80px;object-fit:cover;border-radius:12px;margin-bottom:8px;display:block}
+    .mini-card-name-amber{font-family:'Bebas Neue',cursive;font-size:1rem;color:#f9c74f;font-weight:700;line-height:1.2}
+    .mini-card-name-blue{font-family:'Bebas Neue',cursive;font-size:1rem;color:#7dd8f8;font-weight:700;line-height:1.2}
+    .mini-card-en{color:rgba(249,237,217,.4);font-size:.72rem;margin-bottom:10px;font-style:italic}
+    .cmp-table{margin-bottom:16px}
+    .cmp-col-headers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;text-align:center}
+    .cmp-col-h-amber{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#f9c74f;font-weight:700}
+    .cmp-col-h-blue{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#7dd8f8;font-weight:700}
+    .cmp-fact-label{text-align:center;font-size:.78rem;color:rgba(249,237,217,.45);font-weight:600;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:5px}
+    .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;animation:fadeSlide .4s ease both}
+    .cmp-cell-a{background:rgba(249,199,79,.15);border:1.5px solid rgba(249,199,79,.3);border-radius:14px;padding:10px 12px;font-size:.82rem;font-weight:700;line-height:1.4}
+    .cmp-cell-b{background:rgba(100,200,255,.12);border:1.5px solid rgba(100,200,255,.3);border-radius:14px;padding:10px 12px;font-size:.82rem;font-weight:700;line-height:1.4}
+    .diff-a{background:rgba(249,120,40,.22)!important;border-color:rgba(249,120,40,.5)!important}
+    .diff-b{background:rgba(80,180,255,.22)!important;border-color:rgba(80,180,255,.5)!important}
+    .cmp-summary{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:20px;padding:18px 20px;margin-bottom:16px;animation:bounceIn .5s ease both}
+    .cmp-summary-row{display:flex;gap:10px;align-items:flex-start}
+    .cmp-summary-icon{font-size:2rem;flex-shrink:0}
+    .cmp-summary-title{font-family:'Bebas Neue',cursive;font-size:.95rem;color:#f9c74f;font-weight:700;margin-bottom:6px}
+    .cmp-summary-text{font-size:.93rem;line-height:1.6}
+
+
+
+    .hidden{display:none!important}
+    .flex-col{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .flex-row{display:flex;gap:10px}
   </style>
 </head>
 <body>
 
-<!-- HERO -->
-<section class="hero">
-  <div style="animation:fadeUp .8s ease both">
-    <div class="hero-tag">Pre deti od 3 rokov 🦕</div>
-    <div class="hero-dino">🦖</div>
-    <h1 class="hero-title">Dino Detektív</h1>
-    <p class="hero-sub">Odfotí hračku alebo obrázok z knihy → <strong>zistí všetko o dinosaurovi</strong> a vypočuješ si ako reval!</p>
-    <a href="/app" class="btn-cta">🔍 Spustiť appku</a>
-    <div class="hero-note">Zadarmo • Funguje na mobile • Bez registrácie</div>
+
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <a href="/" style="position:absolute;top:16px;left:16px;color:rgba(249,237,217,.45);font-size:.85rem;text-decoration:none;font-weight:600;font-family:'Nunito',sans-serif">← Domov</a>
+  <div class="header">
+    <div class="header-dino" id="header-dino">🦖</div>
+    <div class="header-title" id="header-title">DINO DETEKTÍV</div>
+    <div class="header-sub" id="header-sub">Odfotí dinosaura → zistí všetko o ňom!</div>
   </div>
-</section>
 
-<!-- FEATURES -->
-<section class="features">
-  <h2 class="section-title reveal">Čo vie Dino Detektív?</h2>
-  <div class="feat-grid">
-    <div class="feat-card reveal">
-      <div class="feat-icon">📸</div>
-      <div class="feat-title">Odfotí akéhokoľvek dina</div>
-      <div class="feat-text">Hračka, obrázok z knihy, plagát na stene — stačí ukázať a appka ho spozná.</div>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">📚</div>
-      <div class="feat-title">8 zaujímavých faktov</div>
-      <div class="feat-text">Veľkosť, kde žil, kedy žil, čo jedol, zuby, zrak, správanie — všetko vysvetlené pre deti.</div>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">⚡</div>
-      <div class="feat-title">Prirovnania zo sveta detí</div>
-      <div class="feat-text">"Bol veľký ako 3 autobusy" alebo "Zrak mal lepší ako orol" — nie suchá encyklopédia.</div>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">🔊</div>
-      <div class="feat-title">Počuješ ako reval</div>
-      <div class="feat-text">Každý dinosaurus má vlastný zvuk — od hlbokého revu T-Rexa po vtáčí chirp pterosaura.</div>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">🆚</div>
-      <div class="feat-title">Porovnaj dvoch dínov</div>
-      <div class="feat-text">Odfotíš dvoch a appka ich porovná vedľa seba — zvýrazní rozdiely a vysvetlí ich.</div>
-    </div>
-    <div class="feat-card reveal">
-      <div class="feat-icon">💬</div>
-      <div class="feat-title">Pýtaj sa na čokoľvek</div>
-      <div class="feat-text">"Mal dinosaurus kamarátov?" "Bál sa niečoho?" — AI odpovie jednoducho a veselo.</div>
-    </div>
-  </div>
-</section>
+  <div class="wrap">
 
-<div class="dino-divider">🦕🦖🦕🦖🦕</div>
+    <!-- ══ SINGLE VIEW ══ -->
+    <div id="view-single">
 
-<!-- HOW IT WORKS -->
-<section class="how">
-  <h2 class="section-title reveal">Ako to funguje?</h2>
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <div class="step-title">Odfotíš dinosaura 📸</div>
-        <div class="step-text">Hračku, stránku z knihy, plagát — cokoľvek kde je dinosaurus. Appka funguje s akýmkoľvek obrázkom.</div>
+      <!-- Upload 1 -->
+      <label id="zone-upload" for="file1" class="uz mb20">
+        <span class="uz-icon">🦕</span>
+        <span class="uz-title" style="color:#f9c74f">Klikni sem a vyber fotku</span>
+        <span class="uz-sub">📸 Obrázok z knihy alebo hračka dinosaura</span>
+      </label>
+      <input id="file1" type="file" accept="image/*" capture="environment" class="hidden" onchange="onFile1(this)"/>
+
+      <!-- Preview 1 -->
+      <div id="preview-wrap1" class="img-wrap hidden">
+        <img id="preview1" class="img-preview" src="" alt="dino"/>
+        <label for="file1" id="btn-change1" class="img-change">📸 Iná fotka</label>
       </div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <div class="step-title">AI ho spozná 🧠</div>
-        <div class="step-text">Využívame pokročilú AI od Anthropic (rovnakú technológiu ako Claude) — spozná stovky druhov dinosaurov.</div>
-      </div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <div class="step-title">Fakty sa odhalia jedna po druhej ✨</div>
-        <div class="step-text">Kartičky sa postupne objavujú — od veľkosti a miesta až po tajné zaujímavosti. Napätie zaručené!</div>
-      </div>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">4</div>
-      <div class="step-body">
-        <div class="step-title">Počuješ rev a pýtaš sa 🦖</div>
-        <div class="step-text">Stlačíš tlačidlo a dinosaurus zareve. Potom môžeš písať ľubovoľné otázky — o tomto dínovi, alebo porovnať s ďalším!</div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- SHOWCASE FACTS -->
-<section class="showcase">
-  <h2 class="section-title reveal">Čo sa dozvieš o T-Rexovi?</h2>
-  <div class="facts-demo">
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">📏</span><div><div class="fact-demo-label">Aký bol veľký?</div><div class="fact-demo-text">Dlhý ako 3 autobusy za sebou a vysoký ako poschodový dom!</div></div></div>
-    </div>
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">🍖</span><div><div class="fact-demo-label">Čo jedol?</div><div class="fact-demo-text">Bol mäsožravec — jedol iných dinosaurov. Ako keby si mal na obed celého slona!</div></div></div>
-    </div>
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">🦷</span><div><div class="fact-demo-label">Aké mal zuby?</div><div class="fact-demo-text">Mal až 60 zubov, každý dlhý ako tvoje predlaktie — a stále rástli nové!</div></div></div>
-    </div>
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">👁️</span><div><div class="fact-demo-label">Aký mal zrak?</div><div class="fact-demo-text">Videl 13-krát lepšie ako ty — zbadal by ťa z kilometra!</div></div></div>
-    </div>
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">⚡</span><div><div class="fact-demo-label">Vedel si, že…</div><div class="fact-demo-text">T-Rex mal malé predné nožičky — kratšie ako tvoje ramená, hoci bol obrovský!</div></div></div>
-    </div>
-    <div class="fact-demo-card reveal">
-      <div class="fact-demo-row"><span class="fact-demo-icon">⏳</span><div><div class="fact-demo-label">Kedy žil?</div><div class="fact-demo-text">Pred 66 miliónmi rokov — to je tak dávno, že ani prababička prababičky to nezažila!</div></div></div>
-    </div>
-  </div>
-</section>
+      <!-- Scan btn -->
+      <button id="btn-scan1" class="btn-scan mb16 hidden" onclick="scan1()">🔍 Zisti, kto to je!</button>
 
-<!-- CTA BOTTOM -->
-<section class="cta-bottom">
-  <div class="reveal">
-    <div style="font-size:3rem;margin-bottom:16px">🦖</div>
-    <div class="cta-bottom-title">Pripravený na lov?</div>
-    <div class="cta-bottom-sub">Vezmi dinosaura z police, odfotíš ho a zistíte spolu všetko čo potrebujete vedieť.</div>
-    <a href="/app" class="btn-cta">🔍 Spustiť Dino Detektíva</a>
-    <div style="margin-top:20px;color:var(--text-dim);font-size:.85rem">
-      📱 Na mobile: pridaj na plochu pre zážitok ako normálna appka
-    </div>
-  </div>
-</section>
+      <!-- Loading -->
+      <div id="loading1" class="loading hidden">
+        <div class="loading-icons">
+          <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
+          <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🔍</span>
+          <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">📚</span>
+        </div>
+        <div class="loading-text">Hľadám v dinosaurej encyklopédii…</div>
+      </div>
 
-<footer>
-  <div>Dino Detektív · Spravené s 🦕 pre malých paleontológov</div>
-  <div style="margin-top:6px">Poháňané <a href="https://anthropic.com" target="_blank">Anthropic AI</a></div>
-</footer>
+      <!-- Alerts -->
+      <div id="alert-notdino" class="alert alert-warn hidden">
+        <div class="alert-icon">🤔</div>
+        <div class="alert-title">Toto nie je dinosaurus!</div>
+        <div class="alert-sub">Skús odfotiť obrázok z knihy o dinosauroch alebo hračku 🦕</div>
+      </div>
+      <div id="alert-error1" class="alert alert-err hidden">
+        <div class="alert-icon">😅</div>
+        <div class="alert-title">Ups! Niečo sa pokazilo.</div>
+        <div class="alert-sub">Skús znova!</div>
+      </div>
+
+      <!-- Results -->
+      <div id="results1" class="hidden">
+        <div class="name-card">
+          <div class="name-emoji" id="res-emoji"></div>
+          <div class="name-sk" id="res-name-sk"></div>
+          <div class="name-en" id="res-name-en"></div>
+        </div>
+        <div id="fact-cards"></div>
+
+        <button id="btn-roar1" class="btn-roar mb12 hidden" onclick="roar(1)">🔊 Počuj, ako revie!</button>
+        <button id="btn-compare" class="btn-compare mb14 hidden" onclick="startCompare()">🆚 Porovnaj s iným dinosaurom</button>
+
+        <!-- Q&A single -->
+        <div id="qa1" class="qa-wrap hidden">
+          <div class="qa-header">
+            <span class="qa-header-icon">💬</span>
+            <div>
+              <div class="qa-header-title">Opýtaj sa na čokoľvek!</div>
+              <div class="qa-header-sub">Napíš otázku o tomto dinosaurovi</div>
+            </div>
+          </div>
+          <div id="qa1-msgs" class="qa-msgs"></div>
+          <div class="qa-input-row">
+            <input id="qa1-input" class="qa-input" placeholder="Napr. Mal dinosaurus kamarátov?" onkeydown="if(event.key==='Enter')askQ1()"/>
+            <button class="qa-send" onclick="askQ1()" id="qa1-btn">Pýtaj →</button>
+          </div>
+        </div>
+
+        <button class="btn-ghost" onclick="resetAll()">← Skúsiť iného dinosaura</button>
+      </div>
+
+    </div><!-- /view-single -->
+
+    <!-- ══ COMPARE VIEW ══ -->
+    <div id="view-compare" class="hidden">
+
+      <!-- Dino 1 bar -->
+      <div class="cmp-dino1-bar">
+        <img id="cmp-img1" class="cmp-dino1-img" src="" alt=""/>
+        <div>
+          <div id="cmp-emoji1" style="font-size:1.5rem"></div>
+          <div id="cmp-name1" style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f9c74f;font-weight:700"></div>
+          <div id="cmp-en1" style="font-size:.78rem;color:rgba(249,237,217,.4);font-style:italic"></div>
+        </div>
+        <div class="cmp-vs">🆚</div>
+      </div>
+
+      <!-- Upload 2 -->
+      <label id="zone-upload2" for="file2" class="uz2 mb16">
+        <span class="uz-icon">🦕</span>
+        <span class="uz-title" style="color:#7dd8f8">Vyber druhého dinosaura</span>
+        <span class="uz-sub">📸 Ďalší obrázok alebo hračka</span>
+      </label>
+      <input id="file2" type="file" accept="image/*" capture="environment" class="hidden" onchange="onFile2(this)"/>
+
+      <!-- Preview 2 -->
+      <div id="preview-wrap2" class="img-wrap hidden">
+        <img id="preview2" class="img-preview" src="" alt="dino2"/>
+        <label for="file2" class="img-change">📸 Zmeniť</label>
+      </div>
+
+      <!-- Scan btn 2 -->
+      <button id="btn-scan2" class="btn-scan mb14 hidden" onclick="scan2()">🔍 Porovnať!</button>
+
+      <!-- Loading 2 -->
+      <div id="loading2" class="loading hidden">
+        <div class="loading-icons">
+          <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
+          <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🔍</span>
+          <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">📚</span>
+        </div>
+        <div class="loading-text">Hľadám druhého dinosaura…</div>
+      </div>
+
+      <!-- Not dino 2 -->
+      <div id="alert-notdino2" class="alert alert-warn hidden">
+        <div class="alert-icon">🤔</div>
+        <div class="alert-title">Toto nie je dinosaurus!</div>
+        <div class="alert-sub">Skús inú fotku. 🦕</div>
+      </div>
+
+      <!-- Compare results -->
+      <div id="cmp-results" class="hidden">
+        <div class="mini-cards">
+          <div class="mini-card mini-card-amber">
+            <img id="mc-img1" class="mini-card-img" src="" alt=""/>
+            <div id="mc-emoji1" style="font-size:2rem;margin-bottom:2px"></div>
+            <div id="mc-name1" class="mini-card-name-amber"></div>
+            <div id="mc-en1" class="mini-card-en"></div>
+            <button class="btn-roar-sm" style="background:linear-gradient(135deg,#d43b28,#b02619);box-shadow:0 4px 14px rgba(212,59,40,.5)" id="roar-btn1" onclick="roar(1)">🔊 Rev!</button>
+          </div>
+          <div class="mini-card mini-card-blue">
+            <img id="mc-img2" class="mini-card-img" src="" alt=""/>
+            <div id="mc-emoji2" style="font-size:2rem;margin-bottom:2px"></div>
+            <div id="mc-name2" class="mini-card-name-blue"></div>
+            <div id="mc-en2" class="mini-card-en"></div>
+            <button class="btn-roar-sm" style="background:linear-gradient(135deg,#2877d4,#1a5ab0);box-shadow:0 4px 14px rgba(40,119,212,.5)" id="roar-btn2" onclick="roar(2)">🔊 Rev!</button>
+          </div>
+        </div>
+
+        <div id="cmp-table" class="cmp-table"></div>
+
+        <div id="cmp-loading" class="loading hidden">
+          <div class="loading-icons">
+            <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
+            <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🆚</span>
+            <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">🦕</span>
+          </div>
+          <div class="loading-text">Porovnávam dinosaurov…</div>
+        </div>
+
+        <div id="cmp-summary" class="cmp-summary hidden">
+          <div class="cmp-summary-row">
+            <span class="cmp-summary-icon">🧠</span>
+            <div>
+              <div class="cmp-summary-title">Hlavné rozdiely:</div>
+              <div class="cmp-summary-text" id="cmp-summary-text"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Q&A compare -->
+        <div id="qa2" class="qa-wrap hidden">
+          <div class="qa-header">
+            <span class="qa-header-icon">💬</span>
+            <div>
+              <div class="qa-header-title">Opýtaj sa o oboch!</div>
+              <div class="qa-header-sub" id="qa2-sub"></div>
+            </div>
+          </div>
+          <div id="qa2-msgs" class="qa-msgs"></div>
+          <div class="qa-input-row">
+            <input id="qa2-input" class="qa-input" placeholder="Napr. Ktorý by vyhral súboj?" onkeydown="if(event.key==='Enter')askQ2()"/>
+            <button class="qa-send" onclick="askQ2()" id="qa2-btn">Pýtaj →</button>
+          </div>
+        </div>
+
+      </div><!-- /cmp-results -->
+
+      <div class="flex-col">
+        <button class="btn-ghost" onclick="startCompare()">↩ Vyskúšať iné porovnanie</button>
+        <button class="btn-ghost" onclick="resetAll()">← Začať odznova</button>
+      </div>
+
+    </div><!-- /view-compare -->
+
+  </div><!-- /wrap -->
+</div><!-- /app -->
 
 <script>
-  // Reveal on scroll
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); });
-  }, { threshold: 0.12 });
-  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+// ─── State ────────────────────────────────────────────────────────────────────
+let dino1 = null, dino2 = null;
+let imgUrl1 = null, imgUrl2 = null;
+let imgData1 = null, imgData2 = null;
+let roaring1 = false, roaring2 = false;
+let factTimer = null;
+
+const FACTS = [
+  {key:"size",        icon:"📏", label:"Aký bol veľký?"},
+  {key:"location",    icon:"🗺️", label:"Kde žil?"},
+  {key:"period",      icon:"⏳", label:"Kedy žil?"},
+  {key:"diet",        icon:"🍖", label:"Čo jedol?"},
+  {key:"teeth",       icon:"🦷", label:"Aké mal zuby?"},
+  {key:"vision",      icon:"👁️",  label:"Aký mal zrak?"},
+  {key:"observation", icon:"🔭", label:"Čo rád sledoval?"},
+  {key:"fun_fact",    icon:"⚡", label:"Vedel si, že…"},
+];
+
+const CMP_FACTS = [
+  {key:"size",     icon:"📏", label:"Veľkosť"},
+  {key:"diet",     icon:"🍖", label:"Strava"},
+  {key:"teeth",    icon:"🦷", label:"Zuby"},
+  {key:"vision",   icon:"👁️",  label:"Zrak"},
+  {key:"period",   icon:"⏳", label:"Kedy žil"},
+  {key:"location", icon:"🗺️", label:"Kde žil"},
+];
+
+const SCAN_PROMPT = `Si detektív dinosaurov pre 4-ročné deti. Identifikuj dinosaura na obrázku.
+Odpovedaj IBA ako JSON (žiadny iný text, žiadne markdown backticks):
+{"is_dinosaur":true,"name_sk":"slovenský názov","name_en":"vedecký názov","emoji":"emoji","period":"kedy žil","diet":"čo jedol – prirovnanie pre deti, max 2 vety","teeth":"zuby – veľkosť s prirovnaním, max 2 vety","vision":"sila zraku s prirovnaním, max 2 vety","observation":"čo rád sledoval, kreatívne, max 2 vety","size":"veľkosť s prirovnaním napr. ako autobus, max 1 veta","location":"kde žil, max 1 veta","fun_fact":"prekvapujúca zaujímavosť, max 2 vety","roar_type":"deep alebo medium alebo light alebo chirpy"}
+Ak nie je dinosaurus: is_dinosaur:false. roar_type: deep=veľký mäsožravec, medium=stredný, light=malý/bylinožravec, chirpy=vtáčí.`;
+
+// ─── Utils ────────────────────────────────────────────────────────────────────
+function $(id){ return document.getElementById(id); }
+function show(id){ $(id).classList.remove("hidden"); }
+function hide(id){ $(id).classList.add("hidden"); }
+function showEl(el){ el.classList.remove("hidden"); }
+function hideEl(el){ el.classList.add("hidden"); }
+
+function init(){
+  if("serviceWorker" in navigator){
+    navigator.serviceWorker.register("/public/sw.js").catch(()=>{});
+  }
+}
+
+// ─── File handling ────────────────────────────────────────────────────────────
+function resizeImage(file, callback){
+  const MAX = 1024;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      let w = img.width, h = img.height;
+      if(w > MAX || h > MAX){
+        if(w > h){ h = Math.round(h * MAX / w); w = MAX; }
+        else { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      const [hdr, b64] = dataUrl.split(",");
+      callback({ base64: b64, mediaType: "image/jpeg" });
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function onFile1(input){
+  const file = input.files[0];
+  if(!file) return;
+  imgUrl1 = URL.createObjectURL(file);
+  $("preview1").src = imgUrl1;
+  hide("zone-upload");
+  show("preview-wrap1");
+  show("btn-scan1");
+  hide("alert-notdino"); hide("alert-error1"); hide("results1"); hide("loading1");
+  dino1 = null;
+  resizeImage(file, data => { imgData1 = data; });
+  input.value = "";
+}
+
+function onFile2(input){
+  const file = input.files[0];
+  if(!file) return;
+  imgUrl2 = URL.createObjectURL(file);
+  $("preview2").src = imgUrl2;
+  hide("zone-upload2");
+  show("preview-wrap2");
+  show("btn-scan2");
+  hide("alert-notdino2"); hide("cmp-results"); hide("loading2");
+  dino2 = null;
+  resizeImage(file, data => { imgData2 = data; });
+  input.value = "";
+}
+
+// ─── API call ─────────────────────────────────────────────────────────────────
+async function callAPI(messages, maxTokens=1000){
+  const res = await fetch("/api/proxy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages, max_tokens: maxTokens })
+  });
+  const json = await res.json();
+  if(!res.ok){ throw new Error(json.error || "Chyba servera"); }
+  return json.content.filter(b=>b.type==="text").map(b=>b.text).join("");
+}
+
+// ─── Scan 1 ───────────────────────────────────────────────────────────────────
+async function scan1(){
+  if(!imgData1) return;
+  hide("btn-scan1"); hide("alert-notdino"); hide("alert-error1");
+  show("loading1");
+
+  try {
+    const raw = await callAPI([{role:"user", content:[
+      {type:"image", source:{type:"base64", media_type:imgData1.mediaType, data:imgData1.base64}},
+      {type:"text",  text:SCAN_PROMPT}
+    ]}]);
+    const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+
+    if(!parsed.is_dinosaur){
+      hide("loading1"); show("alert-notdino"); show("btn-scan1"); return;
+    }
+
+    dino1 = parsed;
+    hide("loading1");
+    showResults1();
+
+  } catch(e){
+    console.error(e);
+    hide("loading1"); show("alert-error1"); show("btn-scan1");
+  }
+}
+
+function showResults1(){
+  $("res-emoji").textContent = dino1.emoji;
+  $("res-name-sk").textContent = dino1.name_sk;
+  $("res-name-en").textContent = dino1.name_en;
+  $("fact-cards").innerHTML = "";
+  show("results1");
+
+  let i = 0;
+  factTimer = setInterval(()=>{
+    if(i >= FACTS.length){
+      clearInterval(factTimer);
+      show("btn-roar1"); show("btn-compare"); show("qa1");
+      return;
+    }
+    const f = FACTS[i];
+    if(dino1[f.key]){
+      const div = document.createElement("div");
+      div.className = "fc";
+      div.innerHTML = `<div class="fc-row"><span class="fc-icon">${f.icon}</span><div><div class="fc-label">${f.label}</div><div class="fc-text">${dino1[f.key]}</div></div></div>`;
+      $("fact-cards").appendChild(div);
+    }
+    i++;
+  }, 230);
+}
+
+// ─── Scan 2 ───────────────────────────────────────────────────────────────────
+async function scan2(){
+  if(!imgData2) return;
+  hide("btn-scan2"); hide("alert-notdino2");
+  show("loading2");
+
+  try {
+    const raw = await callAPI([{role:"user", content:[
+      {type:"image", source:{type:"base64", media_type:imgData2.mediaType, data:imgData2.base64}},
+      {type:"text",  text:SCAN_PROMPT}
+    ]}]);
+    const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
+
+    if(!parsed.is_dinosaur){
+      hide("loading2"); show("alert-notdino2"); show("btn-scan2"); return;
+    }
+
+    dino2 = parsed;
+    hide("loading2");
+    showCmpResults();
+    generateComparison();
+
+  } catch(e){
+    console.error(e);
+    hide("loading2"); show("btn-scan2");
+  }
+}
+
+function showCmpResults(){
+  $("mc-img1").src = imgUrl1; $("mc-img2").src = imgUrl2;
+  $("mc-emoji1").textContent = dino1.emoji; $("mc-emoji2").textContent = dino2.emoji;
+  $("mc-name1").textContent = dino1.name_sk; $("mc-name2").textContent = dino2.name_sk;
+  $("mc-en1").textContent = dino1.name_en; $("mc-en2").textContent = dino2.name_en;
+
+  // Build comparison table
+  let html = `<div class="cmp-col-headers"><div class="cmp-col-h-amber">${dino1.emoji} ${dino1.name_sk}</div><div class="cmp-col-h-blue">${dino2.emoji} ${dino2.name_sk}</div></div>`;
+  CMP_FACTS.forEach((f, idx) => {
+    const diff = dino1[f.key] !== dino2[f.key];
+    html += `<div class="cmp-fact-label"><span>${f.icon}</span>${f.label}</div>`;
+    html += `<div class="cmp-row" style="animation-delay:${idx*80}ms">`;
+    html += `<div class="cmp-cell-a${diff?" diff-a":""}">${dino1[f.key]||"—"}</div>`;
+    html += `<div class="cmp-cell-b${diff?" diff-b":""}">${dino2[f.key]||"—"}</div>`;
+    html += `</div>`;
+  });
+  $("cmp-table").innerHTML = html;
+
+  $("qa2-sub").textContent = `Môžeš sa pýtať na ${dino1.name_sk} aj ${dino2.name_sk}`;
+  show("cmp-results");
+}
+
+async function generateComparison(){
+  show("cmp-loading");
+  try {
+    const txt = await callAPI([{role:"user", content:
+      `Porovnaj tieto dva dinosaury pre 4-ročné dieťa po slovensky. Zdôrazni 3 najväčšie rozdiely medzi nimi veselo a jednoducho. Použi prirovnania zo sveta detí. Max 4 vety.\nDinosaurus 1: ${dino1.name_sk} — veľkosť: ${dino1.size} — jedol: ${dino1.diet} — zuby: ${dino1.teeth}\nDinosaurus 2: ${dino2.name_sk} — veľkosť: ${dino2.size} — jedol: ${dino2.diet} — zuby: ${dino2.teeth}`
+    }], 350);
+    hide("cmp-loading");
+    $("cmp-summary-text").textContent = txt;
+    show("cmp-summary");
+    show("qa2");
+  } catch(e){
+    hide("cmp-loading");
+  }
+}
+
+// ─── Q&A ─────────────────────────────────────────────────────────────────────
+async function askQ1(){
+  const q = $("qa1-input").value.trim(); if(!q||!dino1) return;
+  $("qa1-input").value = "";
+  $("qa1-btn").disabled = true; $("qa1-btn").textContent = "…";
+  addBubble("qa1-msgs", q, null);
+  try {
+    const a = await callAPI([{role:"user", content:
+      `Si kamarát dinosaurov a odpovedáš 4-ročnému dieťaťu po slovensky. Dinosaurus je: ${dino1.name_sk} (${dino1.name_en}). Odpovedaj jednoducho, veselo, max 3 vety, použi prirovnania zo sveta detí. Otázka dieťaťa: ${q}`
+    }], 300);
+    updateLastBubble("qa1-msgs", a);
+  } catch(e){ updateLastBubble("qa1-msgs", "Ups, niečo sa pokazilo!"); }
+  $("qa1-btn").disabled = false; $("qa1-btn").textContent = "Pýtaj →";
+  $("qa1").scrollIntoView({behavior:"smooth", block:"end"});
+}
+
+async function askQ2(){
+  const q = $("qa2-input").value.trim(); if(!q||!dino1||!dino2) return;
+  $("qa2-input").value = "";
+  $("qa2-btn").disabled = true; $("qa2-btn").textContent = "…";
+  addBubble("qa2-msgs", q, null);
+  try {
+    const a = await callAPI([{role:"user", content:
+      `Si kamarát dinosaurov a odpovedáš 4-ročnému dieťaťu po slovensky. Porovnávame: ${dino1.name_sk} a ${dino2.name_sk}. Odpovedaj jednoducho, veselo, max 3 vety. Otázka: ${q}`
+    }], 300);
+    updateLastBubble("qa2-msgs", a);
+  } catch(e){ updateLastBubble("qa2-msgs", "Ups, niečo sa pokazilo!"); }
+  $("qa2-btn").disabled = false; $("qa2-btn").textContent = "Pýtaj →";
+  $("qa2").scrollIntoView({behavior:"smooth", block:"end"});
+}
+
+function addBubble(containerId, q, a){
+  const wrap = document.createElement("div");
+  wrap.innerHTML = `<div class="bubble-q">🧒 ${q}</div><div class="bubble-a" id="bubble-${Date.now()}">${a===null?"🦖 …":"🦖 "+a}</div>`;
+  $(containerId).appendChild(wrap);
+}
+function updateLastBubble(containerId, a){
+  const bubbles = $(containerId).querySelectorAll(".bubble-a");
+  if(bubbles.length) bubbles[bubbles.length-1].textContent = "🦖 " + a;
+}
+
+// ─── Roar ─────────────────────────────────────────────────────────────────────
+function roar(which){
+  const d = which===1 ? dino1 : dino2;
+  const isRoaring = which===1 ? roaring1 : roaring2;
+  const btnId = which===1 ? "btn-roar1" : "roar-btn2";
+  const btn1Id = which===1 ? "btn-roar1" : "roar-btn1";
+  if(!d || isRoaring) return;
+
+  const type = d.roar_type || "deep";
+  const dur = playRoar(type);
+  const btn = $(btnId);
+
+  if(which===1){ roaring1=true; }else{ roaring2=true; }
+  btn.classList.add("roaring");
+  btn.textContent = "🦖 RRRAAAARGH!!!";
+  setTimeout(()=>{
+    if(which===1){ roaring1=false; }else{ roaring2=false; }
+    btn.classList.remove("roaring");
+    btn.textContent = which===1 ? "🔊 Počuj, ako revie!" : "🔊 Rev!";
+  }, dur+200);
+}
+
+function playRoar(type){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const t=ctx.currentTime;
+    const cfg={deep:{f:48,d:3.4,v:.32},medium:{f:95,d:2.6,v:.27},light:{f:165,d:2.0,v:.23},chirpy:{f:320,d:1.4,v:.20}}[type]||{f:48,d:3.4,v:.32};
+    const makeWS=a=>{const ws=ctx.createWaveShaper(),c=new Float32Array(256);for(let i=0;i<256;i++){const x=(i*2)/256-1;c[i]=(Math.PI+a)*x/(Math.PI+a*Math.abs(x));}ws.curve=c;return ws;};
+    [[1,"sawtooth"],[1.5,"sawtooth"],[2,"square"],[2.9,"sawtooth"],[4.1,"square"],[0.5,"sine"]].forEach(([h,wt],i)=>{
+      const osc=ctx.createOscillator(),g=ctx.createGain(),ws=makeWS(150-i*15);
+      osc.type=wt;osc.frequency.setValueAtTime(cfg.f*h,t);osc.frequency.linearRampToValueAtTime(cfg.f*h*.68,t+cfg.d);
+      const v=cfg.v/Math.pow(i+1,.58);
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.12);g.gain.setValueAtTime(v,t+cfg.d*.62);g.gain.exponentialRampToValueAtTime(.001,t+cfg.d);
+      osc.connect(ws);ws.connect(g);g.connect(ctx.destination);osc.start(t);osc.stop(t+cfg.d);
+    });
+    return cfg.d*1000;
+  }catch(e){return 2500;}
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+function startCompare(){
+  hide("view-single"); show("view-compare");
+  $("header-title").textContent = "🆚 POROVNÁVAČ";
+  $("header-sub").textContent = (dino1?.name_sk||"?") + " vs kto?";
+  // Reset dino2 side
+  hide("preview-wrap2"); hide("btn-scan2"); hide("cmp-results"); hide("alert-notdino2"); hide("loading2");
+  show("zone-upload2");
+  dino2=null; imgUrl2=null; imgData2=null;
+  $("cmp-img1").src = imgUrl1;
+  $("cmp-emoji1").textContent = dino1?.emoji||"";
+  $("cmp-name1").textContent = dino1?.name_sk||"";
+  $("cmp-en1").textContent = dino1?.name_en||"";
+  $("qa2-msgs").innerHTML = "";
+  $("cmp-table").innerHTML = "";
+  hide("cmp-summary"); hide("qa2");
+  window.scrollTo(0,0);
+}
+
+function resetAll(){
+  dino1=null; dino2=null; imgUrl1=null; imgUrl2=null; imgData1=null; imgData2=null;
+  roaring1=false; roaring2=false;
+  if(factTimer) clearInterval(factTimer);
+
+  hide("view-compare"); show("view-single");
+  $("header-title").textContent = "DINO DETEKTÍV";
+  $("header-sub").textContent = "Odfotí dinosaura → zistí všetko o ňom!";
+
+  // Reset single
+  hide("preview-wrap1"); hide("btn-scan1"); hide("loading1");
+  hide("alert-notdino"); hide("alert-error1"); hide("results1");
+  hide("btn-roar1"); hide("btn-compare"); hide("qa1");
+  show("zone-upload");
+  $("fact-cards").innerHTML = "";
+  $("qa1-msgs").innerHTML = "";
+  $("qa1-input").value = "";
+
+  window.scrollTo(0,0);
+}
+
+init();
 </script>
 </body>
 </html>
