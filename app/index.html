@@ -12,10 +12,10 @@
   <link rel="apple-touch-icon" href="/icon-192.png"/>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka:wght@600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap');
     *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
     html,body{height:100%;background:#0a2215}
-    body{font-family:'Baloo 2',cursive;color:#f9edd9;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
+    body{font-family:'Nunito',sans-serif;color:#f9edd9;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
 
     @keyframes bounceIn{0%{transform:translateY(36px) scale(.78);opacity:0}65%{transform:translateY(-7px) scale(1.04);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
     @keyframes roarShake{0%,100%{transform:scale(1) rotate(0)}10%{transform:scale(1.10) rotate(-3deg)}20%{transform:scale(1.13) rotate(3deg)}35%{transform:scale(1.09) rotate(-2deg)}50%{transform:scale(1.06) rotate(2deg)}70%{transform:scale(1.03) rotate(-1deg)}}
@@ -28,22 +28,22 @@
 
     .header{text-align:center;padding:30px 20px 16px}
     .header-dino{font-size:3.6rem;display:inline-block;animation:dinoHop 1.6s ease-in-out infinite}
-    .header-title{font-family:'Fredoka',cursive;font-size:clamp(2rem,10vw,3.2rem);font-weight:700;color:#f9c74f;text-shadow:0 3px 12px rgba(0,0,0,.45);letter-spacing:1px;line-height:1.05;margin-top:4px}
+    .header-title{font-family:'Bebas Neue',cursive;font-size:clamp(2rem,10vw,3.2rem);font-weight:700;color:#f9c74f;text-shadow:0 3px 12px rgba(0,0,0,.45);letter-spacing:4px;line-height:1.05;margin-top:4px}
     .header-sub{margin-top:6px;color:rgba(249,237,217,.6);font-size:.95rem;font-weight:600}
 
     .wrap{max-width:500px;margin:0 auto;padding:0 16px}
 
     /* Buttons */
-    .btn-scan{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Fredoka',cursive;font-size:1.3rem;font-weight:700;padding:16px;cursor:pointer;box-shadow:0 6px 22px rgba(245,166,35,.45);transition:all .2s;display:block;text-align:center;-webkit-appearance:none}
+    .btn-scan{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:700;padding:16px;cursor:pointer;box-shadow:0 6px 22px rgba(245,166,35,.45);transition:all .2s;display:block;text-align:center;-webkit-appearance:none}
     .btn-scan:active{transform:scale(.96)}
-    .btn-roar{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#d43b28,#b02619);color:#fff;font-family:'Fredoka',cursive;font-size:1.45rem;font-weight:700;padding:18px;cursor:pointer;box-shadow:0 6px 22px rgba(212,59,40,.55);transition:all .2s;-webkit-appearance:none}
+    .btn-roar{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#d43b28,#b02619);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.45rem;font-weight:700;padding:18px;cursor:pointer;box-shadow:0 6px 22px rgba(212,59,40,.55);transition:all .2s;-webkit-appearance:none}
     .btn-roar.roaring{animation:roarShake .4s ease-in-out}
     .btn-roar:active{transform:scale(.96)}
-    .btn-compare{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#5b6af0,#3b4bcc);color:#fff;font-family:'Fredoka',cursive;font-size:1.15rem;font-weight:700;padding:14px;cursor:pointer;box-shadow:0 6px 22px rgba(91,106,240,.45);-webkit-appearance:none}
+    .btn-compare{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#5b6af0,#3b4bcc);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.15rem;font-weight:700;padding:14px;cursor:pointer;box-shadow:0 6px 22px rgba(91,106,240,.45);-webkit-appearance:none}
     .btn-compare:active{transform:scale(.96)}
-    .btn-ghost{width:100%;background:transparent;border:2px solid rgba(249,237,217,.3);color:rgba(249,237,217,.65);border-radius:60px;font-family:'Baloo 2',cursive;font-size:.95rem;padding:11px;cursor:pointer;-webkit-appearance:none}
+    .btn-ghost{width:100%;background:transparent;border:2px solid rgba(249,237,217,.3);color:rgba(249,237,217,.65);border-radius:60px;font-family:'Nunito',sans-serif;font-size:.95rem;padding:11px;cursor:pointer;-webkit-appearance:none}
     .btn-ghost:active{background:rgba(249,237,217,.08)}
-    .btn-roar-sm{flex:1;border:none;border-radius:60px;color:#fff;font-family:'Fredoka',cursive;font-size:1rem;font-weight:700;padding:13px 8px;cursor:pointer;-webkit-appearance:none}
+    .btn-roar-sm{flex:1;border:none;border-radius:60px;color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;font-weight:700;padding:13px 8px;cursor:pointer;-webkit-appearance:none}
     .btn-roar-sm:active{transform:scale(.95)}
     .mb12{margin-bottom:12px}
     .mb14{margin-bottom:14px}
@@ -56,72 +56,72 @@
     .uz2{border:3px dashed rgba(100,200,255,.45);border-radius:28px;text-align:center;padding:36px 20px;cursor:pointer;transition:all .25s;display:block;width:100%}
     .uz2:active{border-color:rgba(100,200,255,.9);background:rgba(100,200,255,.06)}
     .uz-icon{font-size:4rem;margin-bottom:12px;display:block;animation:dinoHop 1.4s ease-in-out infinite}
-    .uz-title{font-family:'Fredoka',cursive;font-size:1.3rem;font-weight:600}
+    .uz-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:600}
     .uz-sub{margin-top:8px;color:rgba(249,237,217,.5);font-size:.9rem}
 
     /* Image preview */
     .img-wrap{position:relative;margin-bottom:18px}
     .img-preview{width:100%;border-radius:22px;max-height:260px;object-fit:cover;box-shadow:0 8px 32px rgba(0,0,0,.45);display:block}
-    .img-change{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50px;padding:7px 14px;font-size:.82rem;cursor:pointer;font-family:'Baloo 2',cursive;font-weight:600;display:block;text-align:center}
+    .img-change{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50px;padding:7px 14px;font-size:.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:600;display:block;text-align:center}
 
     /* Fact card */
     .fc{background:linear-gradient(135deg,#faf3e2,#f4e8cc);border-radius:20px;padding:15px 18px;color:#2a1505;box-shadow:0 4px 18px rgba(0,0,0,.22);border-left:5px solid #f5a623;animation:bounceIn .48s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:11px}
     .fc-row{display:flex;align-items:flex-start;gap:14px}
     .fc-icon{font-size:1.8rem;flex-shrink:0;line-height:1}
-    .fc-label{font-family:'Fredoka',cursive;font-size:.88rem;color:#8b5e3c;font-weight:600;margin-bottom:3px}
+    .fc-label{font-family:'Bebas Neue',cursive;font-size:.88rem;color:#8b5e3c;font-weight:600;margin-bottom:3px}
     .fc-text{font-size:.95rem;font-weight:700;line-height:1.55}
 
     /* Name card */
     .name-card{text-align:center;padding:22px 20px;background:rgba(249,199,79,.1);border-radius:26px;border:2px solid rgba(249,199,79,.32);animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:20px}
     .name-emoji{font-size:4.2rem;margin-bottom:6px}
-    .name-sk{font-family:'Fredoka',cursive;font-size:2.2rem;color:#f9c74f;line-height:1.1}
+    .name-sk{font-family:'Bebas Neue',cursive;font-size:2.2rem;color:#f9c74f;line-height:1.1}
     .name-en{color:rgba(249,237,217,.4);font-size:.85rem;margin-top:4px;font-style:italic}
 
     /* Loading */
     .loading{text-align:center;padding:28px 0}
     .loading-icons{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
     .loading-icon{font-size:2.6rem}
-    .loading-text{font-family:'Fredoka',cursive;font-size:1.2rem;color:#f9c74f}
+    .loading-text{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f}
 
     /* Alerts */
     .alert{border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:16px}
     .alert-warn{background:rgba(249,156,21,.14);border:2px solid rgba(249,156,21,.3)}
     .alert-err{background:rgba(200,50,40,.18);border:2px solid rgba(200,50,40,.35)}
     .alert-icon{font-size:2.8rem;margin-bottom:10px}
-    .alert-title{font-family:'Fredoka',cursive;font-size:1.2rem;color:#f9c74f;margin-bottom:6px}
+    .alert-title{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f;margin-bottom:6px}
     .alert-sub{color:rgba(249,237,217,.7);font-size:.9rem}
 
     /* Q&A */
     .qa-wrap{background:rgba(255,255,255,.05);border:2px solid rgba(249,199,79,.25);border-radius:24px;padding:18px;margin-bottom:14px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both}
     .qa-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
     .qa-header-icon{font-size:1.8rem}
-    .qa-header-title{font-family:'Fredoka',cursive;font-size:1.05rem;color:#f9c74f;font-weight:700}
+    .qa-header-title{font-family:'Bebas Neue',cursive;font-size:1.05rem;color:#f9c74f;font-weight:700}
     .qa-header-sub{font-size:.8rem;color:rgba(249,237,217,.5)}
     .qa-msgs{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
     .bubble-q{background:rgba(249,199,79,.18);border-radius:18px 18px 4px 18px;padding:10px 16px;color:#f9c74f;font-weight:700;font-size:.95rem}
     .bubble-a{background:rgba(255,255,255,.1);border-radius:18px 18px 18px 4px;padding:10px 16px;color:#f9edd9;font-size:.93rem;line-height:1.55;animation:bounceIn .4s ease both}
     .qa-input-row{display:flex;gap:8px;align-items:center}
-    .qa-input{flex:1;background:rgba(255,255,255,.08);border:2px solid rgba(249,199,79,.35);border-radius:50px;color:#f9edd9;font-family:'Baloo 2',cursive;font-size:1rem;padding:12px 18px;outline:none;-webkit-appearance:none;min-width:0}
+    .qa-input{flex:1;background:rgba(255,255,255,.08);border:2px solid rgba(249,199,79,.35);border-radius:50px;color:#f9edd9;font-family:'Nunito',sans-serif;font-size:1rem;padding:12px 18px;outline:none;-webkit-appearance:none;min-width:0}
     .qa-input::placeholder{color:rgba(249,237,217,.4)}
-    .qa-send{border:none;border-radius:50px;background:linear-gradient(135deg,#4caf76,#2d8a52);color:#fff;font-family:'Fredoka',cursive;font-size:.95rem;font-weight:700;padding:12px 18px;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
+    .qa-send{border:none;border-radius:50px;background:linear-gradient(135deg,#4caf76,#2d8a52);color:#fff;font-family:'Bebas Neue',cursive;font-size:.95rem;font-weight:700;padding:12px 18px;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
     .qa-send:disabled{opacity:.5}
 
     /* Compare */
     .cmp-dino1-bar{background:rgba(249,199,79,.1);border:2px solid rgba(249,199,79,.3);border-radius:20px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
     .cmp-dino1-img{width:64px;height:64px;object-fit:cover;border-radius:12px;flex-shrink:0}
-    .cmp-vs{margin-left:auto;font-family:'Fredoka',cursive;font-size:1.8rem;color:rgba(249,199,79,.4)}
+    .cmp-vs{margin-left:auto;font-family:'Bebas Neue',cursive;font-size:1.8rem;color:rgba(249,199,79,.4)}
     .mini-cards{display:flex;gap:10px;margin-bottom:20px;animation:bounceIn .5s ease both}
     .mini-card{flex:1;border-radius:20px;padding:14px 12px;text-align:center;min-width:0}
     .mini-card-amber{background:rgba(249,199,79,.12);border:2px solid rgba(249,199,79,.35)}
     .mini-card-blue{background:rgba(100,200,255,.12);border:2px solid rgba(100,200,255,.3)}
     .mini-card-img{width:100%;height:80px;object-fit:cover;border-radius:12px;margin-bottom:8px;display:block}
-    .mini-card-name-amber{font-family:'Fredoka',cursive;font-size:1rem;color:#f9c74f;font-weight:700;line-height:1.2}
-    .mini-card-name-blue{font-family:'Fredoka',cursive;font-size:1rem;color:#7dd8f8;font-weight:700;line-height:1.2}
+    .mini-card-name-amber{font-family:'Bebas Neue',cursive;font-size:1rem;color:#f9c74f;font-weight:700;line-height:1.2}
+    .mini-card-name-blue{font-family:'Bebas Neue',cursive;font-size:1rem;color:#7dd8f8;font-weight:700;line-height:1.2}
     .mini-card-en{color:rgba(249,237,217,.4);font-size:.72rem;margin-bottom:10px;font-style:italic}
     .cmp-table{margin-bottom:16px}
     .cmp-col-headers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;text-align:center}
-    .cmp-col-h-amber{font-family:'Fredoka',cursive;font-size:.9rem;color:#f9c74f;font-weight:700}
-    .cmp-col-h-blue{font-family:'Fredoka',cursive;font-size:.9rem;color:#7dd8f8;font-weight:700}
+    .cmp-col-h-amber{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#f9c74f;font-weight:700}
+    .cmp-col-h-blue{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#7dd8f8;font-weight:700}
     .cmp-fact-label{text-align:center;font-size:.78rem;color:rgba(249,237,217,.45);font-weight:600;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:5px}
     .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;animation:fadeSlide .4s ease both}
     .cmp-cell-a{background:rgba(249,199,79,.15);border:1.5px solid rgba(249,199,79,.3);border-radius:14px;padding:10px 12px;font-size:.82rem;font-weight:700;line-height:1.4}
@@ -131,7 +131,7 @@
     .cmp-summary{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:20px;padding:18px 20px;margin-bottom:16px;animation:bounceIn .5s ease both}
     .cmp-summary-row{display:flex;gap:10px;align-items:flex-start}
     .cmp-summary-icon{font-size:2rem;flex-shrink:0}
-    .cmp-summary-title{font-family:'Fredoka',cursive;font-size:.95rem;color:#f9c74f;font-weight:700;margin-bottom:6px}
+    .cmp-summary-title{font-family:'Bebas Neue',cursive;font-size:.95rem;color:#f9c74f;font-weight:700;margin-bottom:6px}
     .cmp-summary-text{font-size:.93rem;line-height:1.6}
 
 
@@ -148,7 +148,7 @@
 <!-- MAIN APP -->
 <div id="app">
 
-  <a href="/" style="position:absolute;top:16px;left:16px;color:rgba(249,237,217,.45);font-size:.85rem;text-decoration:none;font-weight:600;font-family:'Baloo 2',cursive">← Domov</a>
+  <a href="/" style="position:absolute;top:16px;left:16px;color:rgba(249,237,217,.45);font-size:.85rem;text-decoration:none;font-weight:600;font-family:'Nunito',sans-serif">← Domov</a>
   <div class="header">
     <div class="header-dino" id="header-dino">🦖</div>
     <div class="header-title" id="header-title">DINO DETEKTÍV</div>
@@ -240,7 +240,7 @@
         <img id="cmp-img1" class="cmp-dino1-img" src="" alt=""/>
         <div>
           <div id="cmp-emoji1" style="font-size:1.5rem"></div>
-          <div id="cmp-name1" style="font-family:'Fredoka',cursive;font-size:1.1rem;color:#f9c74f;font-weight:700"></div>
+          <div id="cmp-name1" style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f9c74f;font-weight:700"></div>
           <div id="cmp-en1" style="font-size:.78rem;color:rgba(249,237,217,.4);font-style:italic"></div>
         </div>
         <div class="cmp-vs">🆚</div>
