@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="description" content="Odfotí hračku alebo obrázok dinosaura a zistí všetko o ňom. Pre deti od 3 rokov."/>
+  <meta property="og:title" content="Dino Detektív 🦖"/>
+  <meta property="og:description" content="Odfotí dinosaura → zistí čo jedol, kde žil, aký bol veľký a vypočuješ si ako reval!"/>
+  <meta property="og:image" content="/icon-512.png"/>
+  <title>Dino Detektív 🦖</title>
+  <link rel="icon" href="/icon-192.png"/>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Fredoka:wght@600;700&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --green-deep:#0a2215;
+      --green-mid:#163520;
+      --gold:#f9c74f;
+      --gold-dim:rgba(249,199,79,.7);
+      --text:rgba(249,237,217,.85);
+      --text-dim:rgba(249,237,217,.5);
+    }
+    html{scroll-behavior:smooth}
+    body{font-family:'Baloo 2',cursive;background:var(--green-deep);color:var(--text);overflow-x:hidden}
+
+    @keyframes dinoHop{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    @keyframes fadeUp{0%{opacity:0;transform:translateY(30px)}100%{opacity:1;transform:translateY(0)}}
+    @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    @keyframes roarShake{0%,100%{transform:scale(1) rotate(0)}20%{transform:scale(1.12) rotate(-3deg)}40%{transform:scale(1.1) rotate(3deg)}60%{transform:scale(1.06) rotate(-1deg)}}
+    @keyframes starFloat{0%{opacity:0;transform:translateY(0) scale(0)}30%{opacity:1}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
+
+    /* ── HERO ── */
+    .hero{
+      min-height:100vh;
+      background:linear-gradient(160deg,#0a2215 0%,#163520 60%,#0e2a1a 100%);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:40px 20px;position:relative;overflow:hidden;
+    }
+    .hero::before{
+      content:"";position:absolute;inset:0;
+      background:radial-gradient(ellipse 80% 60% at 50% 40%, rgba(249,199,79,.06) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .hero-dino{font-size:clamp(5rem,18vw,9rem);animation:dinoHop 1.8s ease-in-out infinite;display:inline-block;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
+    .hero-tag{display:inline-block;background:rgba(249,199,79,.15);border:1.5px solid rgba(249,199,79,.35);border-radius:50px;padding:6px 20px;font-size:.85rem;font-weight:700;color:var(--gold-dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+    .hero-title{font-family:'Fredoka',cursive;font-size:clamp(3rem,12vw,7rem);font-weight:700;color:var(--gold);text-shadow:0 4px 20px rgba(0,0,0,.5);line-height:1;margin-bottom:8px}
+    .hero-sub{font-size:clamp(1rem,3vw,1.4rem);color:var(--text-dim);max-width:520px;line-height:1.7;margin:0 auto 36px}
+    .hero-sub strong{color:var(--text)}
+
+    .btn-cta{
+      display:inline-block;font-family:'Fredoka',cursive;font-size:1.4rem;font-weight:700;
+      background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;
+      border:none;border-radius:60px;padding:18px 48px;cursor:pointer;
+      box-shadow:0 8px 30px rgba(245,166,35,.5);
+      text-decoration:none;animation:pulse 2.5s ease-in-out infinite;
+      transition:transform .2s;
+    }
+    .btn-cta:hover{transform:scale(1.05);animation:none}
+    .hero-note{margin-top:16px;font-size:.85rem;color:var(--text-dim)}
+
+    /* ── FEATURES ── */
+    .features{padding:80px 20px;background:linear-gradient(180deg,#0a2215,#0d1f12)}
+    .section-title{font-family:'Fredoka',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold);text-align:center;margin-bottom:48px}
+    .feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;max-width:900px;margin:0 auto}
+    .feat-card{background:rgba(255,255,255,.04);border:1.5px solid rgba(249,199,79,.18);border-radius:24px;padding:28px 24px;transition:border-color .25s}
+    .feat-card:hover{border-color:rgba(249,199,79,.45)}
+    .feat-icon{font-size:2.8rem;margin-bottom:12px}
+    .feat-title{font-family:'Fredoka',cursive;font-size:1.2rem;color:var(--gold);font-weight:700;margin-bottom:8px}
+    .feat-text{font-size:.95rem;color:var(--text-dim);line-height:1.65}
+
+    /* ── HOW IT WORKS ── */
+    .how{padding:80px 20px;background:#0a2215}
+    .steps{display:flex;flex-direction:column;gap:0;max-width:580px;margin:0 auto}
+    .step{display:flex;gap:20px;position:relative;padding-bottom:36px}
+    .step:last-child{padding-bottom:0}
+    .step:not(:last-child)::after{content:"";position:absolute;left:27px;top:56px;bottom:0;width:2px;background:rgba(249,199,79,.2)}
+    .step-num{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#e07310);display:flex;align-items:center;justify-content:center;font-family:'Fredoka',cursive;font-size:1.4rem;font-weight:700;flex-shrink:0;box-shadow:0 4px 16px rgba(245,166,35,.4)}
+    .step-body{padding-top:8px}
+    .step-title{font-family:'Fredoka',cursive;font-size:1.15rem;color:var(--gold);font-weight:700;margin-bottom:6px}
+    .step-text{font-size:.93rem;color:var(--text-dim);line-height:1.6}
+
+    /* ── SHOWCASE ── */
+    .showcase{padding:80px 20px;background:linear-gradient(180deg,#0d1f12,#0a2215)}
+    .facts-demo{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;max-width:800px;margin:0 auto}
+    .fact-demo-card{background:linear-gradient(135deg,#faf3e2,#f4e8cc);border-radius:18px;padding:14px 16px;color:#2a1505;border-left:5px solid #f5a623}
+    .fact-demo-row{display:flex;align-items:center;gap:10px}
+    .fact-demo-icon{font-size:1.6rem;flex-shrink:0}
+    .fact-demo-label{font-family:'Fredoka',cursive;font-size:.8rem;color:#8b5e3c;font-weight:600}
+    .fact-demo-text{font-size:.88rem;font-weight:700;color:#2a1505;line-height:1.4}
+
+    /* ── CTA BOTTOM ── */
+    .cta-bottom{padding:80px 20px;text-align:center;background:#0a2215;border-top:1px solid rgba(249,199,79,.1)}
+    .cta-bottom-title{font-family:'Fredoka',cursive;font-size:clamp(1.8rem,5vw,3rem);color:var(--gold);margin-bottom:12px}
+    .cta-bottom-sub{color:var(--text-dim);font-size:1rem;margin-bottom:32px;max-width:400px;margin-left:auto;margin-right:auto}
+
+    /* ── FOOTER ── */
+    footer{padding:24px 20px;text-align:center;border-top:1px solid rgba(255,255,255,.06);color:var(--text-dim);font-size:.82rem}
+    footer a{color:var(--gold-dim);text-decoration:none}
+
+    /* Divider dinos */
+    .dino-divider{text-align:center;padding:20px 0;font-size:2rem;letter-spacing:16px;opacity:.25}
+
+    /* Animate on scroll */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div style="animation:fadeUp .8s ease both">
+    <div class="hero-tag">Pre deti od 3 rokov 🦕</div>
+    <div class="hero-dino">🦖</div>
+    <h1 class="hero-title">Dino Detektív</h1>
+    <p class="hero-sub">Odfotí hračku alebo obrázok z knihy → <strong>zistí všetko o dinosaurovi</strong> a vypočuješ si ako reval!</p>
+    <a href="/app" class="btn-cta">🔍 Spustiť appku</a>
+    <div class="hero-note">Zadarmo • Funguje na mobile • Bez registrácie</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <h2 class="section-title reveal">Čo vie Dino Detektív?</h2>
+  <div class="feat-grid">
+    <div class="feat-card reveal">
+      <div class="feat-icon">📸</div>
+      <div class="feat-title">Odfotí akéhokoľvek dina</div>
+      <div class="feat-text">Hračka, obrázok z knihy, plagát na stene — stačí ukázať a appka ho spozná.</div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">📚</div>
+      <div class="feat-title">8 zaujímavých faktov</div>
+      <div class="feat-text">Veľkosť, kde žil, kedy žil, čo jedol, zuby, zrak, správanie — všetko vysvetlené pre deti.</div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-title">Prirovnania zo sveta detí</div>
+      <div class="feat-text">"Bol veľký ako 3 autobusy" alebo "Zrak mal lepší ako orol" — nie suchá encyklopédia.</div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🔊</div>
+      <div class="feat-title">Počuješ ako reval</div>
+      <div class="feat-text">Každý dinosaurus má vlastný zvuk — od hlbokého revu T-Rexa po vtáčí chirp pterosaura.</div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🆚</div>
+      <div class="feat-title">Porovnaj dvoch dínov</div>
+      <div class="feat-text">Odfotíš dvoch a appka ich porovná vedľa seba — zvýrazní rozdiely a vysvetlí ich.</div>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">💬</div>
+      <div class="feat-title">Pýtaj sa na čokoľvek</div>
+      <div class="feat-text">"Mal dinosaurus kamarátov?" "Bál sa niečoho?" — AI odpovie jednoducho a veselo.</div>
+    </div>
+  </div>
+</section>
+
+<div class="dino-divider">🦕🦖🦕🦖🦕</div>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <h2 class="section-title reveal">Ako to funguje?</h2>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Odfotíš dinosaura 📸</div>
+        <div class="step-text">Hračku, stránku z knihy, plagát — cokoľvek kde je dinosaurus. Appka funguje s akýmkoľvek obrázkom.</div>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">AI ho spozná 🧠</div>
+        <div class="step-text">Využívame pokročilú AI od Anthropic (rovnakú technológiu ako Claude) — spozná stovky druhov dinosaurov.</div>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Fakty sa odhalia jedna po druhej ✨</div>
+        <div class="step-text">Kartičky sa postupne objavujú — od veľkosti a miesta až po tajné zaujímavosti. Napätie zaručené!</div>
+      </div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Počuješ rev a pýtaš sa 🦖</div>
+        <div class="step-text">Stlačíš tlačidlo a dinosaurus zareve. Potom môžeš písať ľubovoľné otázky — o tomto dínovi, alebo porovnať s ďalším!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE FACTS -->
+<section class="showcase">
+  <h2 class="section-title reveal">Čo sa dozvieš o T-Rexovi?</h2>
+  <div class="facts-demo">
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">📏</span><div><div class="fact-demo-label">Aký bol veľký?</div><div class="fact-demo-text">Dlhý ako 3 autobusy za sebou a vysoký ako poschodový dom!</div></div></div>
+    </div>
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">🍖</span><div><div class="fact-demo-label">Čo jedol?</div><div class="fact-demo-text">Bol mäsožravec — jedol iných dinosaurov. Ako keby si mal na obed celého slona!</div></div></div>
+    </div>
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">🦷</span><div><div class="fact-demo-label">Aké mal zuby?</div><div class="fact-demo-text">Mal až 60 zubov, každý dlhý ako tvoje predlaktie — a stále rástli nové!</div></div></div>
+    </div>
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">👁️</span><div><div class="fact-demo-label">Aký mal zrak?</div><div class="fact-demo-text">Videl 13-krát lepšie ako ty — zbadal by ťa z kilometra!</div></div></div>
+    </div>
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">⚡</span><div><div class="fact-demo-label">Vedel si, že…</div><div class="fact-demo-text">T-Rex mal malé predné nožičky — kratšie ako tvoje ramená, hoci bol obrovský!</div></div></div>
+    </div>
+    <div class="fact-demo-card reveal">
+      <div class="fact-demo-row"><span class="fact-demo-icon">⏳</span><div><div class="fact-demo-label">Kedy žil?</div><div class="fact-demo-text">Pred 66 miliónmi rokov — to je tak dávno, že ani prababička prababičky to nezažila!</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BOTTOM -->
+<section class="cta-bottom">
+  <div class="reveal">
+    <div style="font-size:3rem;margin-bottom:16px">🦖</div>
+    <div class="cta-bottom-title">Pripravený na lov?</div>
+    <div class="cta-bottom-sub">Vezmi dinosaura z police, odfotíš ho a zistíte spolu všetko čo potrebujete vedieť.</div>
+    <a href="/app" class="btn-cta">🔍 Spustiť Dino Detektíva</a>
+    <div style="margin-top:20px;color:var(--text-dim);font-size:.85rem">
+      📱 Na mobile: pridaj na plochu pre zážitok ako normálna appka
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div>Dino Detektív · Spravené s 🦕 pre malých paleontológov</div>
+  <div style="margin-top:6px">Poháňané <a href="https://anthropic.com" target="_blank">Anthropic AI</a></div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
