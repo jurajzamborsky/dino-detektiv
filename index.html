@@ -196,7 +196,7 @@
       <div id="alert-error1" class="alert alert-err hidden">
         <div class="alert-icon">😅</div>
         <div class="alert-title">Ups! Niečo sa pokazilo.</div>
-        <div class="alert-sub">Skús znova!</div>
+        <div class="alert-sub" id="error-msg">Skús znova!</div>
       </div>
 
       <!-- Results -->
@@ -481,6 +481,7 @@ async function scan1(){
 
   } catch(e){
     console.error(e);
+    $("error-msg").textContent = e.message || JSON.stringify(e);
     hide("loading1"); show("alert-error1"); show("btn-scan1");
   }
 }
