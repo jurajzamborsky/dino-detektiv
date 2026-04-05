@@ -1,11 +1,11 @@
 {
-  "name": "Dino Detektív",
-  "short_name": "Dino",
+  "name": "Zauri",
+  "short_name": "Zauri",
   "description": "Odfotí dinosaura a zistí všetko o ňom!",
   "start_url": "/app",
   "display": "standalone",
-  "background_color": "#0a2215",
-  "theme_color": "#0a2215",
+  "background_color": "#F9F4E8",
+  "theme_color": "#F9F4E8",
   "orientation": "portrait",
   "icons": [
     { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },

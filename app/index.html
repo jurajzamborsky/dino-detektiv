@@ -4,773 +4,892 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <meta name="apple-mobile-web-app-title" content="Dino Detektív"/>
-  <meta name="theme-color" content="#0a2215"/>
-  <title>Dino Detektív</title>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="Zauri"/>
+  <meta name="theme-color" content="#F9F4E8"/>
+  <title>Zauri 🦖</title>
   <link rel="manifest" href="/public/manifest.json"/>
   <link rel="apple-touch-icon" href="/icon-192.png"/>
-
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka:wght@600;700&display=swap" rel="stylesheet"/>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap');
-    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-    html,body{height:100%;background:#0a2215}
-    body{font-family:'Nunito',sans-serif;color:#f9edd9;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom)}
+  :root {
+    --green: #6FAF6A; --green-d: #4E8C49;
+    --orange: #F4A340; --orange-d: #D4832A;
+    --bg: #F9F4E8; --surface: #FFFDF8;
+    --text: #2F2A24; --dim: rgba(47,42,36,.5); --light: rgba(47,42,36,.32);
+    --success: #5E9B5B; --info: #7DB7D9; --amber: #E7B14C; --red: #D05040;
+    --border: rgba(47,42,36,.11);
+    --sh: 0 2px 10px rgba(47,42,36,.09);
+    --sh-md: 0 4px 20px rgba(47,42,36,.12);
+    --sh-lg: 0 8px 32px rgba(47,42,36,.16);
+    --r: 18px; --r-sm: 12px; --r-lg: 26px; --r-pill: 100px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{height:100%;scroll-behavior:smooth}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100%;overflow-x:hidden;padding-bottom:env(safe-area-inset-bottom,20px)}
+  img{max-width:100%;display:block}
+  button,label{cursor:pointer}
 
-    @keyframes bounceIn{0%{transform:translateY(36px) scale(.78);opacity:0}65%{transform:translateY(-7px) scale(1.04);opacity:1}100%{transform:translateY(0) scale(1);opacity:1}}
-    @keyframes roarShake{0%,100%{transform:scale(1) rotate(0)}10%{transform:scale(1.10) rotate(-3deg)}20%{transform:scale(1.13) rotate(3deg)}35%{transform:scale(1.09) rotate(-2deg)}50%{transform:scale(1.06) rotate(2deg)}70%{transform:scale(1.03) rotate(-1deg)}}
-    @keyframes dinoHop{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-    @keyframes blink{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-    @keyframes fadeSlide{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
-    @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes hop{0%,100%{transform:translateY(0)}50%{transform:translateY(-13px)}}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  @keyframes bounceIn{0%{transform:scale(.82);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+  @keyframes cardIn{from{transform:translateY(22px) scale(.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  @keyframes shimmer{0%,100%{opacity:.35}50%{opacity:1}}
+  @keyframes roarShake{0%,100%{transform:scale(1)}20%{transform:scale(1.1) rotate(-3deg)}40%{transform:scale(1.08) rotate(3deg)}60%{transform:scale(1.04) rotate(-1deg)}}
+  @keyframes celebrate{0%,100%{transform:scale(1) rotate(0)}30%{transform:scale(1.25) rotate(-10deg)}60%{transform:scale(1.2) rotate(8deg)}}
+  @keyframes wave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.9)}}
 
-    #app{min-height:100vh;background:linear-gradient(160deg,#0a2215 0%,#163520 55%,#0c1e14 100%);padding-bottom:40px}
+  /* SCREENS */
+  .screen{display:none;min-height:100vh;animation:fadeUp .3s ease both}
+  .screen.active{display:block}
 
-    .header{text-align:center;padding:30px 20px 16px}
-    .header-dino{font-size:3.6rem;display:inline-block;animation:dinoHop 1.6s ease-in-out infinite}
-    .header-title{font-family:'Bebas Neue',cursive;font-size:clamp(2rem,10vw,3.2rem);font-weight:700;color:#f9c74f;text-shadow:0 3px 12px rgba(0,0,0,.45);letter-spacing:4px;line-height:1.05;margin-top:4px}
-    .header-sub{margin-top:6px;color:rgba(249,237,217,.6);font-size:.95rem;font-weight:600}
+  /* LOADING */
+  #overlay-loading{display:none;position:fixed;inset:0;z-index:200;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px}
+  #overlay-loading.on{display:flex;animation:fadeIn .2s ease}
+  .ld-dino{font-size:5rem;animation:hop 1.5s ease-in-out infinite;margin-bottom:20px}
+  .ld-msg{font-size:1.1rem;font-weight:800;color:var(--text);max-width:270px;line-height:1.55;min-height:56px}
+  .ld-dots{display:flex;gap:8px;justify-content:center;margin-top:18px}
+  .ld-dot{width:10px;height:10px;border-radius:50%;animation:shimmer .9s infinite}
+  .ld-dot:nth-child(1){background:var(--green)}
+  .ld-dot:nth-child(2){background:var(--orange);animation-delay:.18s}
+  .ld-dot:nth-child(3){background:var(--amber);animation-delay:.36s}
 
-    .wrap{max-width:500px;margin:0 auto;padding:0 16px}
+  /* MEMORY OVERLAY */
+  #overlay-memory{display:none;position:fixed;inset:0;z-index:190;background:rgba(47,42,36,.55);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:24px}
+  #overlay-memory.on{display:flex;animation:fadeIn .25s ease}
+  .mem-card{background:var(--surface);border-radius:var(--r-lg);padding:28px 24px;max-width:380px;width:100%;text-align:center;box-shadow:var(--sh-lg);animation:bounceIn .35s ease}
+  .mem-emoji{font-size:3rem;margin-bottom:12px}
+  .mem-q{font-family:'Fredoka',cursive;font-size:1.45rem;color:var(--text);margin-bottom:20px;line-height:1.4}
+  .mem-opts{display:flex;flex-direction:column;gap:10px}
+  .mem-opt{padding:14px 20px;border-radius:var(--r);border:2.5px solid var(--border);background:var(--bg);font-family:inherit;font-size:1rem;font-weight:800;color:var(--text);transition:all .2s}
+  .mem-opt:active{transform:scale(.97)}
+  .mem-opt.correct{background:#EFF8EE;border-color:var(--success);color:var(--success)}
+  .mem-opt.wrong{background:#FFF0EE;border-color:var(--red);color:var(--red)}
+  .mem-fb{font-size:1rem;font-weight:800;margin-top:14px;min-height:22px}
+  .mem-fb.ok{color:var(--success)}
+  .mem-fb.no{color:var(--red)}
+  .mem-cont{display:none;margin-top:14px}
 
-    /* Buttons */
-    .btn-scan{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:700;padding:16px;cursor:pointer;box-shadow:0 6px 22px rgba(245,166,35,.45);transition:all .2s;display:block;text-align:center;-webkit-appearance:none}
-    .btn-scan:active{transform:scale(.96)}
-    .btn-roar{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#d43b28,#b02619);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.45rem;font-weight:700;padding:18px;cursor:pointer;box-shadow:0 6px 22px rgba(212,59,40,.55);transition:all .2s;-webkit-appearance:none}
-    .btn-roar.roaring{animation:roarShake .4s ease-in-out}
-    .btn-roar:active{transform:scale(.96)}
-    .btn-compare{width:100%;border:none;border-radius:60px;background:linear-gradient(135deg,#5b6af0,#3b4bcc);color:#fff;font-family:'Bebas Neue',cursive;font-size:1.15rem;font-weight:700;padding:14px;cursor:pointer;box-shadow:0 6px 22px rgba(91,106,240,.45);-webkit-appearance:none}
-    .btn-compare:active{transform:scale(.96)}
-    .btn-ghost{width:100%;background:transparent;border:2px solid rgba(249,237,217,.3);color:rgba(249,237,217,.65);border-radius:60px;font-family:'Nunito',sans-serif;font-size:.95rem;padding:11px;cursor:pointer;-webkit-appearance:none}
-    .btn-ghost:active{background:rgba(249,237,217,.08)}
-    .btn-roar-sm{flex:1;border:none;border-radius:60px;color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;font-weight:700;padding:13px 8px;cursor:pointer;-webkit-appearance:none}
-    .btn-roar-sm:active{transform:scale(.95)}
-    .mb12{margin-bottom:12px}
-    .mb14{margin-bottom:14px}
-    .mb16{margin-bottom:16px}
-    .mb20{margin-bottom:20px}
+  /* LAYOUT */
+  .wrap{max-width:480px;margin:0 auto;padding:0 18px}
 
-    /* Upload zone */
-    .uz{border:3px dashed rgba(249,199,79,.45);border-radius:28px;text-align:center;padding:44px 20px;cursor:pointer;transition:all .25s;display:block;width:100%}
-    .uz:active{border-color:rgba(249,199,79,.9);background:rgba(249,199,79,.06)}
-    .uz2{border:3px dashed rgba(100,200,255,.45);border-radius:28px;text-align:center;padding:36px 20px;cursor:pointer;transition:all .25s;display:block;width:100%}
-    .uz2:active{border-color:rgba(100,200,255,.9);background:rgba(100,200,255,.06)}
-    .uz-icon{font-size:4rem;margin-bottom:12px;display:block;animation:dinoHop 1.4s ease-in-out infinite}
-    .uz-title{font-family:'Bebas Neue',cursive;font-size:1.3rem;font-weight:600}
-    .uz-sub{margin-top:8px;color:rgba(249,237,217,.5);font-size:.9rem}
+  /* HEADER */
+  .hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;max-width:480px;margin:0 auto}
+  .logo{font-family:'Fredoka',cursive;font-size:1.9rem;font-weight:700;color:var(--green-d);letter-spacing:.5px;text-decoration:none}
+  .logo em{color:var(--orange);font-style:normal}
+  .btn-back{display:flex;align-items:center;gap:5px;font-size:.9rem;font-weight:800;color:var(--dim);border:none;background:none;padding:8px 0;font-family:inherit}
 
-    /* Image preview */
-    .img-wrap{position:relative;margin-bottom:18px}
-    .img-preview{width:100%;border-radius:22px;max-height:260px;object-fit:cover;box-shadow:0 8px 32px rgba(0,0,0,.45);display:block}
-    .img-change{position:absolute;top:12px;right:12px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50px;padding:7px 14px;font-size:.82rem;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:600;display:block;text-align:center}
+  /* BUTTONS */
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:var(--r-pill);font-family:inherit;font-weight:800;cursor:pointer;transition:all .2s;-webkit-appearance:none;text-decoration:none;width:100%}
+  .btn:active{transform:scale(.96)}
+  .btn-green{background:linear-gradient(135deg,var(--green),var(--green-d));color:#fff;font-size:1.08rem;padding:15px 28px;box-shadow:0 6px 20px rgba(111,175,106,.38)}
+  .btn-orange{background:linear-gradient(135deg,var(--orange),var(--orange-d));color:#fff;font-size:1rem;padding:14px 28px;box-shadow:0 5px 18px rgba(244,163,64,.38)}
+  .btn-ghost{background:transparent;border:2px solid var(--border);color:var(--dim);font-size:.95rem;padding:12px 24px}
+  .btn-ghost:active{border-color:var(--green);color:var(--green)}
+  .btn-icon{width:42px;height:42px;border-radius:50%;background:var(--surface);border:2px solid var(--border);font-size:1.1rem;padding:0;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 
-    /* Fact card */
-    .fc{background:linear-gradient(135deg,#faf3e2,#f4e8cc);border-radius:20px;padding:15px 18px;color:#2a1505;box-shadow:0 4px 18px rgba(0,0,0,.22);border-left:5px solid #f5a623;animation:bounceIn .48s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:11px}
-    .fc-row{display:flex;align-items:flex-start;gap:14px}
-    .fc-icon{font-size:1.8rem;flex-shrink:0;line-height:1}
-    .fc-label{font-family:'Bebas Neue',cursive;font-size:.88rem;color:#8b5e3c;font-weight:600;margin-bottom:3px}
-    .fc-text{font-size:.95rem;font-weight:700;line-height:1.55}
+  /* HOME */
+  .home-hero{text-align:center;padding:28px 20px 20px}
+  .home-dino{font-size:5rem;display:inline-block;animation:hop 2.2s ease-in-out infinite}
+  .home-title{font-family:'Fredoka',cursive;font-size:3rem;margin:10px 0 6px;letter-spacing:.5px}
+  .home-title .z{color:var(--green-d)}
+  .home-title .a{color:var(--orange)}
+  .home-sub{font-size:1rem;color:var(--dim);font-weight:700;max-width:260px;margin:0 auto 24px;line-height:1.65}
+  .capture-lbl{display:block;background:linear-gradient(135deg,var(--green),var(--green-d));border-radius:var(--r-lg);padding:26px 24px;text-align:center;box-shadow:0 8px 28px rgba(111,175,106,.4);animation:pulse 3.5s ease-in-out infinite;margin-bottom:20px}
+  .capture-lbl:active{transform:scale(.97);animation:none}
+  .capture-icon{font-size:2.8rem;display:block;margin-bottom:8px}
+  .capture-title{font-family:'Fredoka',cursive;font-size:1.55rem;color:#fff;margin-bottom:3px}
+  .capture-sub{font-size:.85rem;color:rgba(255,255,255,.8)}
+  .quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+  .quick-card{background:var(--surface);border-radius:var(--r);padding:16px;border:2px solid var(--border);text-align:center;transition:all .2s}
+  .quick-card:active{border-color:var(--green);transform:scale(.97)}
+  .quick-icon{font-size:1.9rem;margin-bottom:6px}
+  .quick-lbl{font-size:.85rem;font-weight:800;color:var(--dim)}
+  .sec-title{font-family:'Fredoka',cursive;font-size:1.1rem;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:7px}
+  .recent-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .recent-row::-webkit-scrollbar{display:none}
+  .recent-card{flex-shrink:0;width:100px;background:var(--surface);border-radius:var(--r);padding:12px 8px;text-align:center;border:2px solid var(--border);transition:all .2s}
+  .recent-card:active{border-color:var(--orange)}
+  .recent-emoji{font-size:2rem;margin-bottom:5px}
+  .recent-name{font-size:.72rem;font-weight:800;color:var(--text);line-height:1.3}
+  .empty{text-align:center;padding:18px;color:var(--dim);font-size:.9rem;font-weight:700}
 
-    /* Name card */
-    .name-card{text-align:center;padding:22px 20px;background:rgba(249,199,79,.1);border-radius:26px;border:2px solid rgba(249,199,79,.32);animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both;margin-bottom:20px}
-    .name-emoji{font-size:4.2rem;margin-bottom:6px}
-    .name-sk{font-family:'Bebas Neue',cursive;font-size:2.2rem;color:#f9c74f;line-height:1.1}
-    .name-en{color:rgba(249,237,217,.4);font-size:.85rem;margin-top:4px;font-style:italic}
+  /* RESULT */
+  .photo-wrap{position:relative;margin-bottom:16px}
+  .photo-main{width:100%;border-radius:var(--r-lg);max-height:240px;object-fit:cover;box-shadow:var(--sh-lg)}
+  .photo-badge{position:absolute;top:12px;right:12px;background:rgba(255,255,255,.92);border-radius:var(--r-pill);padding:5px 14px;font-size:.78rem;font-weight:900;backdrop-filter:blur(4px)}
+  .photo-badge.high{color:var(--success)}
+  .photo-badge.medium{color:var(--amber)}
+  .photo-badge.low{color:var(--red)}
+  .name-card{background:var(--surface);border-radius:var(--r-lg);padding:18px;margin-bottom:14px;text-align:center;border:2px solid var(--border);box-shadow:var(--sh);animation:bounceIn .4s ease}
+  .name-intro{font-size:.82rem;color:var(--dim);font-weight:800;margin-bottom:5px}
+  .name-emoji{font-size:3.4rem;margin-bottom:6px}
+  .name-sk{font-family:'Fredoka',cursive;font-size:2rem;color:var(--text);line-height:1}
+  .name-en{font-size:.8rem;color:var(--light);font-style:italic;margin-top:4px}
 
-    /* Loading */
-    .loading{text-align:center;padding:28px 0}
-    .loading-icons{display:flex;justify-content:center;gap:10px;margin-bottom:16px}
-    .loading-icon{font-size:2.6rem}
-    .loading-text{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f}
+  /* ALTERNATIVES */
+  .alts{margin-bottom:14px;animation:fadeUp .35s ease .1s both}
+  .alts-lbl{font-size:.8rem;font-weight:800;color:var(--dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+  .alts-row{display:flex;gap:8px}
+  .alt-chip{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:10px 6px;text-align:center;font-size:.78rem;font-weight:800;transition:all .2s}
+  .alt-chip:active{border-color:var(--green);background:#EFF8EE}
+  .alt-emoji{font-size:1.35rem;display:block;margin-bottom:3px}
 
-    /* Alerts */
-    .alert{border-radius:22px;padding:24px 20px;text-align:center;margin-bottom:16px}
-    .alert-warn{background:rgba(249,156,21,.14);border:2px solid rgba(249,156,21,.3)}
-    .alert-err{background:rgba(200,50,40,.18);border:2px solid rgba(200,50,40,.35)}
-    .alert-icon{font-size:2.8rem;margin-bottom:10px}
-    .alert-title{font-family:'Bebas Neue',cursive;font-size:1.2rem;color:#f9c74f;margin-bottom:6px}
-    .alert-sub{color:rgba(249,237,217,.7);font-size:.9rem}
+  /* FACT CARDS */
+  .fact-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+  .fcard{background:var(--surface);border-radius:var(--r);border:2px solid var(--border);box-shadow:var(--sh);animation:cardIn .38s ease both;overflow:hidden}
+  .fcard-top{padding:14px 16px;display:flex;align-items:flex-start;gap:12px}
+  .fcard-icon{font-size:1.65rem;flex-shrink:0;padding-top:1px}
+  .fcard-lbl{font-size:.75rem;font-weight:900;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+  .fcard-txt{font-size:.97rem;font-weight:700;line-height:1.55;color:var(--text)}
+  .fcard-bot{border-top:1.5px solid var(--border);padding:9px 16px;display:flex;justify-content:flex-end}
+  .spk-btn{display:flex;align-items:center;gap:6px;background:var(--green);color:#fff;border:none;border-radius:var(--r-pill);padding:7px 16px;font-family:inherit;font-size:.8rem;font-weight:900;transition:all .2s}
+  .spk-btn:active{transform:scale(.94)}
+  .spk-btn.playing{background:var(--success)}
+  .wv{display:inline-flex;gap:2px;align-items:center;height:12px}
+  .wv span{display:inline-block;width:3px;background:#fff;border-radius:2px;height:8px;animation:wave .5s ease-in-out infinite}
+  .wv span:nth-child(2){animation-delay:.1s}
+  .wv span:nth-child(3){animation-delay:.2s}
 
-    /* Q&A */
-    .qa-wrap{background:rgba(255,255,255,.05);border:2px solid rgba(249,199,79,.25);border-radius:24px;padding:18px;margin-bottom:14px;animation:bounceIn .5s cubic-bezier(.34,1.56,.64,1) both}
-    .qa-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-    .qa-header-icon{font-size:1.8rem}
-    .qa-header-title{font-family:'Bebas Neue',cursive;font-size:1.05rem;color:#f9c74f;font-weight:700}
-    .qa-header-sub{font-size:.8rem;color:rgba(249,237,217,.5)}
-    .qa-msgs{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
-    .bubble-q{background:rgba(249,199,79,.18);border-radius:18px 18px 4px 18px;padding:10px 16px;color:#f9c74f;font-weight:700;font-size:.95rem}
-    .bubble-a{background:rgba(255,255,255,.1);border-radius:18px 18px 18px 4px;padding:10px 16px;color:#f9edd9;font-size:.93rem;line-height:1.55;animation:bounceIn .4s ease both}
-    .qa-input-row{display:flex;gap:8px;align-items:center}
-    .qa-input{flex:1;background:rgba(255,255,255,.08);border:2px solid rgba(249,199,79,.35);border-radius:50px;color:#f9edd9;font-family:'Nunito',sans-serif;font-size:1rem;padding:12px 18px;outline:none;-webkit-appearance:none;min-width:0}
-    .qa-input::placeholder{color:rgba(249,237,217,.4)}
-    .qa-send{border:none;border-radius:50px;background:linear-gradient(135deg,#4caf76,#2d8a52);color:#fff;font-family:'Bebas Neue',cursive;font-size:.95rem;font-weight:700;padding:12px 18px;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
-    .qa-send:disabled{opacity:.5}
+  /* PARENT SECTION */
+  .parent-box{background:#EFF8EE;border-radius:var(--r);border:2px solid rgba(111,175,106,.22);margin-bottom:14px;overflow:hidden;animation:cardIn .38s ease .55s both}
+  .parent-btn{width:100%;padding:13px 16px;background:none;border:none;display:flex;align-items:center;justify-content:space-between;font-family:inherit;font-size:.9rem;font-weight:900;color:var(--green-d);cursor:pointer}
+  .parent-arrow{transition:transform .25s}
+  .parent-btn.open .parent-arrow{transform:rotate(180deg)}
+  .parent-body{padding:0 16px 14px;display:none}
+  .parent-body.open{display:block;animation:fadeUp .25s ease}
+  .prow{margin-bottom:9px;font-size:.87rem;line-height:1.6;color:var(--text)}
+  .prow strong{color:var(--green-d);font-weight:900}
+  .conf-note{font-size:.78rem;color:var(--dim);padding:7px 12px;background:rgba(47,42,36,.05);border-radius:var(--r-sm);margin-top:8px;font-weight:700}
 
-    /* Compare */
-    .cmp-dino1-bar{background:rgba(249,199,79,.1);border:2px solid rgba(249,199,79,.3);border-radius:20px;padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:14px}
-    .cmp-dino1-img{width:64px;height:64px;object-fit:cover;border-radius:12px;flex-shrink:0}
-    .cmp-vs{margin-left:auto;font-family:'Bebas Neue',cursive;font-size:1.8rem;color:rgba(249,199,79,.4)}
-    .mini-cards{display:flex;gap:10px;margin-bottom:20px;animation:bounceIn .5s ease both}
-    .mini-card{flex:1;border-radius:20px;padding:14px 12px;text-align:center;min-width:0}
-    .mini-card-amber{background:rgba(249,199,79,.12);border:2px solid rgba(249,199,79,.35)}
-    .mini-card-blue{background:rgba(100,200,255,.12);border:2px solid rgba(100,200,255,.3)}
-    .mini-card-img{width:100%;height:80px;object-fit:cover;border-radius:12px;margin-bottom:8px;display:block}
-    .mini-card-name-amber{font-family:'Bebas Neue',cursive;font-size:1rem;color:#f9c74f;font-weight:700;line-height:1.2}
-    .mini-card-name-blue{font-family:'Bebas Neue',cursive;font-size:1rem;color:#7dd8f8;font-weight:700;line-height:1.2}
-    .mini-card-en{color:rgba(249,237,217,.4);font-size:.72rem;margin-bottom:10px;font-style:italic}
-    .cmp-table{margin-bottom:16px}
-    .cmp-col-headers{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;text-align:center}
-    .cmp-col-h-amber{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#f9c74f;font-weight:700}
-    .cmp-col-h-blue{font-family:'Bebas Neue',cursive;font-size:.9rem;color:#7dd8f8;font-weight:700}
-    .cmp-fact-label{text-align:center;font-size:.78rem;color:rgba(249,237,217,.45);font-weight:600;margin:4px 0;display:flex;align-items:center;justify-content:center;gap:5px}
-    .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;animation:fadeSlide .4s ease both}
-    .cmp-cell-a{background:rgba(249,199,79,.15);border:1.5px solid rgba(249,199,79,.3);border-radius:14px;padding:10px 12px;font-size:.82rem;font-weight:700;line-height:1.4}
-    .cmp-cell-b{background:rgba(100,200,255,.12);border:1.5px solid rgba(100,200,255,.3);border-radius:14px;padding:10px 12px;font-size:.82rem;font-weight:700;line-height:1.4}
-    .diff-a{background:rgba(249,120,40,.22)!important;border-color:rgba(249,120,40,.5)!important}
-    .diff-b{background:rgba(80,180,255,.22)!important;border-color:rgba(80,180,255,.5)!important}
-    .cmp-summary{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.15);border-radius:20px;padding:18px 20px;margin-bottom:16px;animation:bounceIn .5s ease both}
-    .cmp-summary-row{display:flex;gap:10px;align-items:flex-start}
-    .cmp-summary-icon{font-size:2rem;flex-shrink:0}
-    .cmp-summary-title{font-family:'Bebas Neue',cursive;font-size:.95rem;color:#f9c74f;font-weight:700;margin-bottom:6px}
-    .cmp-summary-text{font-size:.93rem;line-height:1.6}
-    .fc{cursor:pointer;transition:transform .15s,box-shadow .15s}
-    .fc:active{transform:scale(.97)}
-    .fc-speak{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding-top:10px;border-top:1.5px solid rgba(139,94,60,.15)}
-    .fc-speak-btn{border:none;background:linear-gradient(135deg,#f5a623,#e07310);color:#fff;font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:2px;border-radius:50px;padding:8px 20px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;box-shadow:0 3px 10px rgba(245,166,35,.4)}
-    .fc-speak-btn:active{transform:scale(.95)}
-    .fc-speak-btn.playing{background:linear-gradient(135deg,#4caf76,#2d8a52);box-shadow:0 3px 10px rgba(76,175,118,.4)}
-    .fc-speak-btn.loading{opacity:.7;cursor:not-allowed}
-    @keyframes soundWave{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.8)}}
-    .wave{display:inline-flex;gap:2px;align-items:center;height:14px}
-    .wave span{display:inline-block;width:3px;background:#fff;border-radius:2px;height:8px}
-    .wave span:nth-child(1){animation:soundWave .6s ease-in-out 0s infinite}
-    .wave span:nth-child(2){animation:soundWave .6s ease-in-out .1s infinite}
-    .wave span:nth-child(3){animation:soundWave .6s ease-in-out .2s infinite}
-    .wave span:nth-child(4){animation:soundWave .6s ease-in-out .1s infinite}
+  /* CHIPS */
+  .chips-wrap{margin-bottom:14px;animation:fadeUp .35s ease .65s both}
+  .chips-lbl{font-size:.78rem;font-weight:900;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .chips-row{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-pill);padding:8px 16px;font-family:inherit;font-size:.83rem;font-weight:800;color:var(--text);transition:all .2s;white-space:nowrap}
+  .chip:active{border-color:var(--green);background:#EFF8EE;transform:scale(.95)}
 
+  /* Q&A */
+  .qa-box{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:14px;margin-bottom:14px;animation:fadeUp .35s ease .75s both}
+  .qa-msgs{display:flex;flex-direction:column;gap:9px;margin-bottom:12px;max-height:240px;overflow-y:auto}
+  .qa-q{align-self:flex-end;background:var(--green);color:#fff;border-radius:16px 16px 4px 16px;padding:9px 14px;font-size:.88rem;font-weight:800;max-width:85%}
+  .qa-a{align-self:flex-start;background:#EFF8EE;border-radius:16px 16px 16px 4px;padding:9px 14px;font-size:.88rem;font-weight:600;color:var(--text);max-width:90%;line-height:1.55;animation:fadeUp .25s ease}
+  .qa-row{display:flex;gap:8px}
+  .qa-inp{flex:1;background:var(--bg);border:2px solid var(--border);border-radius:var(--r-pill);padding:11px 16px;font-family:inherit;font-size:.93rem;color:var(--text);outline:none;transition:border .2s;min-width:0;-webkit-appearance:none}
+  .qa-inp:focus{border-color:var(--green)}
+  .qa-inp::placeholder{color:var(--light)}
+  .qa-send{width:42px;height:42px;border-radius:50%;border:none;background:var(--green);color:#fff;font-size:1.1rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+  .qa-send:active{transform:scale(.9)}
+  .qa-send:disabled{opacity:.45}
 
+  /* ROAR */
+  .roar-btn{width:100%;border:none;border-radius:var(--r-pill);background:linear-gradient(135deg,#d43b28,#b02619);color:#fff;font-family:'Fredoka',cursive;font-size:1.35rem;font-weight:700;padding:17px;cursor:pointer;box-shadow:0 6px 20px rgba(180,40,30,.4);display:flex;align-items:center;justify-content:center;gap:10px;transition:all .2s;-webkit-appearance:none;margin-bottom:12px}
+  .roar-btn:active{transform:scale(.96)}
+  .roar-btn.roaring{animation:roarShake .45s ease-in-out}
+  .roar-btn-sm{border:none;border-radius:var(--r-sm);color:#fff;font-family:'Fredoka',cursive;font-size:.95rem;font-weight:700;padding:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:8px;transition:all .2s}
+  .roar-btn-sm:active{transform:scale(.95)}
 
-    .hidden{display:none!important}
-    .flex-col{display:flex;flex-direction:column;gap:10px;margin-top:8px}
-    .flex-row{display:flex;gap:10px}
+  /* COMPARE */
+  .cmp-header{background:var(--surface);border-radius:var(--r);border:2px solid var(--border);padding:14px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+  .cmp-d1{flex:1;text-align:center}
+  .cmp-vs{font-family:'Fredoka',cursive;font-size:1.4rem;color:var(--light);flex-shrink:0}
+  .cmp-d2{flex:1;text-align:center}
+  .upload-zone{display:block;border:3px dashed rgba(111,175,106,.4);border-radius:var(--r-lg);padding:32px 20px;text-align:center;transition:all .2s;margin-bottom:14px}
+  .upload-zone:active{border-color:var(--green);background:rgba(111,175,106,.05)}
+  .uz-icon{font-size:2.8rem;display:block;margin-bottom:8px;animation:hop 1.8s ease-in-out infinite}
+  .uz-title{font-family:'Fredoka',cursive;font-size:1.2rem;color:var(--green-d);margin-bottom:3px}
+  .uz-sub{font-size:.83rem;color:var(--dim)}
+  .mini-cards{display:flex;gap:10px;margin-bottom:16px;animation:bounceIn .4s ease}
+  .mini-card{flex:1;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:12px 10px;text-align:center;min-width:0}
+  .mini-card.amber{border-color:rgba(244,163,64,.4);background:rgba(244,163,64,.06)}
+  .mini-card.blue{border-color:rgba(125,183,217,.4);background:rgba(125,183,217,.06)}
+  .mini-img{width:100%;height:76px;object-fit:cover;border-radius:var(--r-sm);margin-bottom:6px}
+  .mini-emoji{font-size:1.7rem;margin-bottom:3px}
+  .mini-name{font-family:'Fredoka',cursive;font-size:.9rem;line-height:1.2}
+  .mini-name.amber{color:var(--orange-d)}
+  .mini-name.blue{color:#4A7DA7}
+  .cmp-rows{margin-bottom:14px}
+  .cmp-col-hdrs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px;text-align:center}
+  .cmp-fact-lbl{text-align:center;font-size:.74rem;font-weight:900;color:var(--dim);text-transform:uppercase;letter-spacing:.4px;margin:6px 0 3px;display:flex;align-items:center;justify-content:center;gap:5px}
+  .cmp-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px;animation:cardIn .35s ease both}
+  .cmp-a{background:rgba(244,163,64,.1);border:1.5px solid rgba(244,163,64,.28);border-radius:var(--r-sm);padding:9px 11px;font-size:.8rem;font-weight:800;line-height:1.4;color:var(--text)}
+  .cmp-b{background:rgba(125,183,217,.1);border:1.5px solid rgba(125,183,217,.28);border-radius:var(--r-sm);padding:9px 11px;font-size:.8rem;font-weight:800;line-height:1.4;color:var(--text)}
+  .cmp-a.diff{background:rgba(244,163,64,.22);border-color:rgba(244,163,64,.55)}
+  .cmp-b.diff{background:rgba(125,183,217,.22);border-color:rgba(125,183,217,.55)}
+  .cmp-summary{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;animation:fadeUp .35s ease}
+  .cmp-sum-title{font-family:'Fredoka',cursive;font-size:.95rem;color:var(--text);margin-bottom:7px}
+  .cmp-sum-text{font-size:.9rem;line-height:1.65;color:var(--text)}
+
+  /* HISTORY / FAVS */
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .saved-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;transition:all .2s}
+  .saved-card:active{border-color:var(--orange);transform:scale(.97)}
+  .saved-emoji{font-size:2.4rem;margin-bottom:7px}
+  .saved-name{font-family:'Fredoka',cursive;font-size:.98rem;color:var(--text)}
+  .saved-date{font-size:.73rem;color:var(--dim);margin-top:4px}
+
+  /* MISC */
+  .gap{display:flex;flex-direction:column;gap:10px;margin-top:10px;margin-bottom:20px}
+  .hidden{display:none!important}
+  .divider{height:1.5px;background:var(--border);margin:14px 0}
   </style>
 </head>
 <body>
 
+<!-- LOADING -->
+<div id="overlay-loading">
+  <div class="ld-dino" id="ld-emoji">🦕</div>
+  <div class="ld-msg" id="ld-msg">Zauri kontroluje dino stopy…</div>
+  <div class="ld-dots"><div class="ld-dot"></div><div class="ld-dot"></div><div class="ld-dot"></div></div>
+</div>
 
-
-<!-- MAIN APP -->
-<div id="app">
-
-  <a href="/" style="position:absolute;top:16px;left:16px;color:rgba(249,237,217,.45);font-size:.85rem;text-decoration:none;font-weight:600;font-family:'Nunito',sans-serif">← Domov</a>
-  <div class="header">
-    <div class="header-dino" id="header-dino">🦖</div>
-    <div class="header-title" id="header-title">DINO DETEKTÍV</div>
-    <div class="header-sub" id="header-sub">Odfotí dinosaura → zistí všetko o ňom!</div>
+<!-- MEMORY -->
+<div id="overlay-memory">
+  <div class="mem-card">
+    <div class="mem-emoji">🧠</div>
+    <div class="mem-q" id="mem-q"></div>
+    <div class="mem-opts" id="mem-opts"></div>
+    <div class="mem-fb" id="mem-fb"></div>
+    <button class="btn btn-green mem-cont" id="mem-cont" onclick="closeMemory()">Pokračovať →</button>
   </div>
+</div>
 
-  <div class="wrap">
+<!-- ══════════ HOME ══════════ -->
+<div class="screen active" id="s-home">
+  <div class="home-hero">
+    <div class="home-dino">🦖</div>
+    <div class="home-title"><span class="z">Z</span><span class="a">a</span>uri</div>
+    <div class="home-sub">Odfotí dinosaura a zistí všetko o ňom!</div>
+    <label for="f-main" class="capture-lbl">
+      <span class="capture-icon">📸</span>
+      <div class="capture-title">Odfotiť dinosaura!</div>
+      <div class="capture-sub">Z knihy, hračky alebo obrázku</div>
+    </label>
+    <input id="f-main" type="file" accept="image/*" class="hidden" onchange="onFile1(this)"/>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="go('s-history')">
+        <div class="quick-icon">🕐</div>
+        <div class="quick-lbl">Posledné objavy</div>
+      </div>
+      <div class="quick-card" onclick="go('s-favorites')">
+        <div class="quick-icon">⭐</div>
+        <div class="quick-lbl">Obľúbení</div>
+      </div>
+    </div>
+  </div>
+  <div class="wrap" style="padding-bottom:32px">
+    <div class="sec-title">🕐 Naposledy objavení</div>
+    <div class="recent-row" id="recent-row"><div class="empty">Zatiaľ žiadny. Čo čakáš? 🦕</div></div>
+  </div>
+</div>
 
-    <!-- ══ SINGLE VIEW ══ -->
-    <div id="view-single">
+<!-- ══════════ RESULT ══════════ -->
+<div class="screen" id="s-result">
+  <div class="hdr">
+    <button class="btn-back" onclick="goHome()">← Domov</button>
+    <a class="logo" onclick="goHome()">Z<em>a</em>uri</a>
+    <button class="btn btn-icon" id="fav-btn" onclick="toggleFav()" style="width:42px">🤍</button>
+  </div>
+  <div class="wrap" style="padding-bottom:32px">
+    <div class="photo-wrap" id="photo-wrap1">
+      <img id="photo1" class="photo-main" src="" alt=""/>
+      <div class="photo-badge" id="conf-badge"></div>
+    </div>
+    <label for="f-main2" style="position:absolute;top:0;right:0;display:none" id="photo-change1">
+      <span style="background:rgba(0,0,0,.6);color:#fff;border-radius:50px;padding:6px 13px;font-size:.78rem;cursor:pointer;font-weight:800;display:block">📸 Iná</span>
+    </label>
+    <input id="f-main2" type="file" accept="image/*" class="hidden" onchange="onFile1(this)"/>
 
-      <!-- Upload 1 -->
-      <label id="zone-upload" for="file1" class="uz mb20">
+    <div class="name-card">
+      <div class="name-intro" id="name-intro"></div>
+      <div class="name-emoji" id="name-emoji"></div>
+      <div class="name-sk" id="name-sk"></div>
+      <div class="name-en" id="name-en"></div>
+    </div>
+
+    <div id="alts-section" class="alts hidden">
+      <div class="alts-lbl">Mohlo by to byť aj…</div>
+      <div class="alts-row" id="alts-row"></div>
+    </div>
+
+    <div class="fact-list" id="fact-list"></div>
+
+    <div class="parent-box" id="parent-box" style="display:none">
+      <button class="parent-btn" id="parent-btn" onclick="toggleParent()">
+        <span>🔬 Pre rodiča</span><span class="parent-arrow">▼</span>
+      </button>
+      <div class="parent-body" id="parent-body"></div>
+    </div>
+
+    <div class="chips-wrap" id="chips-wrap" style="display:none">
+      <div class="chips-lbl">💬 Rýchle otázky</div>
+      <div class="chips-row" id="chips-row"></div>
+    </div>
+
+    <div class="qa-box" id="qa-box" style="display:none">
+      <div class="qa-msgs" id="qa-msgs"></div>
+      <div class="qa-row">
+        <input class="qa-inp" id="qa-inp" placeholder="Opýtaj sa čokoľvek…" onkeydown="if(event.key==='Enter')sendQ()"/>
+        <button class="qa-send" id="qa-send" onclick="sendQ()">→</button>
+      </div>
+    </div>
+
+    <button class="roar-btn hidden" id="roar-btn1" onclick="roar(1)">🔊 Počuj, ako revie!</button>
+
+    <div class="gap hidden" id="result-actions">
+      <button class="btn btn-orange" onclick="startCmp()">🆚 Porovnaj s iným dinosaurom</button>
+      <label for="f-main2" class="btn btn-ghost" style="cursor:pointer">📸 Odfotiť iného</label>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ COMPARE ══════════ -->
+<div class="screen" id="s-compare">
+  <div class="hdr">
+    <button class="btn-back" onclick="go('s-result')">← Späť</button>
+    <a class="logo" onclick="goHome()">Z<em>a</em>uri</a>
+    <div style="width:42px"></div>
+  </div>
+  <div class="wrap" style="padding-bottom:32px">
+    <div class="cmp-header">
+      <div class="cmp-d1">
+        <div style="font-size:1.7rem" id="cmp-e1"></div>
+        <div style="font-family:'Fredoka',cursive;font-size:.95rem;color:var(--orange-d)" id="cmp-n1"></div>
+      </div>
+      <div class="cmp-vs">🆚</div>
+      <div class="cmp-d2">
+        <div style="font-size:1.7rem" id="cmp-e2">❓</div>
+        <div style="font-family:'Fredoka',cursive;font-size:.95rem;color:#4A7DA7" id="cmp-n2">Kto?</div>
+      </div>
+    </div>
+
+    <div id="cmp-upload">
+      <label for="f-cmp" class="upload-zone">
         <span class="uz-icon">🦕</span>
-        <span class="uz-title" style="color:#f9c74f">Klikni sem a vyber fotku</span>
-        <span class="uz-sub">📸 Obrázok z knihy alebo hračka dinosaura</span>
+        <div class="uz-title">Vyber druhého dinosaura</div>
+        <div class="uz-sub">📸 Ďalší obrázok alebo hračka</div>
       </label>
-      <input id="file1" type="file" accept="image/*" capture="environment" class="hidden" onchange="onFile1(this)"/>
+      <input id="f-cmp" type="file" accept="image/*" class="hidden" onchange="onFile2(this)"/>
+    </div>
 
-      <!-- Preview 1 -->
-      <div id="preview-wrap1" class="img-wrap hidden">
-        <img id="preview1" class="img-preview" src="" alt="dino"/>
-        <label for="file1" id="btn-change1" class="img-change">📸 Iná fotka</label>
+    <div id="cmp-preview" class="hidden">
+      <div style="position:relative;margin-bottom:14px">
+        <img id="photo2" style="width:100%;border-radius:var(--r-lg);max-height:200px;object-fit:cover;display:block;box-shadow:var(--sh-md)" src="" alt=""/>
+        <label for="f-cmp" style="position:absolute;top:10px;right:10px;background:rgba(0,0,0,.6);color:#fff;border-radius:50px;padding:5px 13px;font-size:.78rem;cursor:pointer;font-weight:800">📸 Zmeniť</label>
       </div>
+      <button class="btn btn-green" onclick="scanCmp()" id="btn-cmp">🔍 Porovnať!</button>
+    </div>
 
-      <!-- Scan btn -->
-      <button id="btn-scan1" class="btn-scan mb16 hidden" onclick="scan1()">🔍 Zisti, kto to je!</button>
-
-      <!-- Loading -->
-      <div id="loading1" class="loading hidden">
-        <div class="loading-icons">
-          <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
-          <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🔍</span>
-          <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">📚</span>
+    <div id="cmp-results" class="hidden">
+      <div class="mini-cards">
+        <div class="mini-card amber">
+          <img id="mc-img1" class="mini-img" src="" alt=""/>
+          <div class="mini-emoji" id="mc-e1"></div>
+          <div class="mini-name amber" id="mc-n1"></div>
+          <button class="roar-btn-sm" style="background:linear-gradient(135deg,#d43b28,#b02619);box-shadow:0 4px 12px rgba(180,40,30,.35)" onclick="roar(1)" id="roar-cmp1">🔊 Rev!</button>
         </div>
-        <div class="loading-text">Hľadám v dinosaurej encyklopédii…</div>
-      </div>
-
-      <!-- Alerts -->
-      <div id="alert-notdino" class="alert alert-warn hidden">
-        <div class="alert-icon">🤔</div>
-        <div class="alert-title">Toto nie je dinosaurus!</div>
-        <div class="alert-sub">Skús odfotiť obrázok z knihy o dinosauroch alebo hračku 🦕</div>
-      </div>
-      <div id="alert-error1" class="alert alert-err hidden">
-        <div class="alert-icon">😅</div>
-        <div class="alert-title">Ups! Niečo sa pokazilo.</div>
-        <div class="alert-sub" id="error-msg">Skús znova!</div>
-      </div>
-
-      <!-- Results -->
-      <div id="results1" class="hidden">
-        <div class="name-card">
-          <div class="name-emoji" id="res-emoji"></div>
-          <div class="name-sk" id="res-name-sk"></div>
-          <div class="name-en" id="res-name-en"></div>
+        <div class="mini-card blue">
+          <img id="mc-img2" class="mini-img" src="" alt=""/>
+          <div class="mini-emoji" id="mc-e2"></div>
+          <div class="mini-name blue" id="mc-n2"></div>
+          <button class="roar-btn-sm" style="background:linear-gradient(135deg,#2877d4,#1a5ab0);box-shadow:0 4px 12px rgba(40,100,200,.35)" onclick="roar(2)" id="roar-cmp2">🔊 Rev!</button>
         </div>
-        <div id="fact-cards"></div>
-
-        <button id="btn-roar1" class="btn-roar mb12 hidden" onclick="roar(1)">🔊 Počuj, ako revie!</button>
-        <button id="btn-compare" class="btn-compare mb14 hidden" onclick="startCompare()">🆚 Porovnaj s iným dinosaurom</button>
-
-        <!-- Q&A single -->
-        <div id="qa1" class="qa-wrap hidden">
-          <div class="qa-header">
-            <span class="qa-header-icon">💬</span>
-            <div>
-              <div class="qa-header-title">Opýtaj sa na čokoľvek!</div>
-              <div class="qa-header-sub">Napíš otázku o tomto dinosaurovi</div>
-            </div>
-          </div>
-          <div id="qa1-msgs" class="qa-msgs"></div>
-          <div class="qa-input-row">
-            <input id="qa1-input" class="qa-input" placeholder="Napr. Mal dinosaurus kamarátov?" onkeydown="if(event.key==='Enter')askQ1()"/>
-            <button class="qa-send" onclick="askQ1()" id="qa1-btn">Pýtaj →</button>
-          </div>
-        </div>
-
-        <button class="btn-ghost" onclick="resetAll()">← Skúsiť iného dinosaura</button>
       </div>
 
-    </div><!-- /view-single -->
+      <div class="cmp-rows" id="cmp-rows"></div>
 
-    <!-- ══ COMPARE VIEW ══ -->
-    <div id="view-compare" class="hidden">
-
-      <!-- Dino 1 bar -->
-      <div class="cmp-dino1-bar">
-        <img id="cmp-img1" class="cmp-dino1-img" src="" alt=""/>
-        <div>
-          <div id="cmp-emoji1" style="font-size:1.5rem"></div>
-          <div id="cmp-name1" style="font-family:'Bebas Neue',cursive;font-size:1.1rem;color:#f9c74f;font-weight:700"></div>
-          <div id="cmp-en1" style="font-size:.78rem;color:rgba(249,237,217,.4);font-style:italic"></div>
-        </div>
-        <div class="cmp-vs">🆚</div>
+      <div class="cmp-summary hidden" id="cmp-sum">
+        <div class="cmp-sum-title">🧠 Záver Zauri:</div>
+        <div class="cmp-sum-text" id="cmp-sum-txt"></div>
       </div>
 
-      <!-- Upload 2 -->
-      <label id="zone-upload2" for="file2" class="uz2 mb16">
-        <span class="uz-icon">🦕</span>
-        <span class="uz-title" style="color:#7dd8f8">Vyber druhého dinosaura</span>
-        <span class="uz-sub">📸 Ďalší obrázok alebo hračka</span>
-      </label>
-      <input id="file2" type="file" accept="image/*" capture="environment" class="hidden" onchange="onFile2(this)"/>
-
-      <!-- Preview 2 -->
-      <div id="preview-wrap2" class="img-wrap hidden">
-        <img id="preview2" class="img-preview" src="" alt="dino2"/>
-        <label for="file2" class="img-change">📸 Zmeniť</label>
+      <div class="qa-box hidden" id="cmp-qa">
+        <div style="font-size:.78rem;font-weight:900;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">💬 Opýtaj sa o oboch</div>
+        <div class="qa-msgs" id="cmp-qa-msgs"></div>
+        <div class="qa-row">
+          <input class="qa-inp" id="cmp-qa-inp" placeholder="Napr. Ktorý by vyhral?" onkeydown="if(event.key==='Enter')sendCmpQ()"/>
+          <button class="qa-send" id="cmp-qa-send" onclick="sendCmpQ()">→</button>
+        </div>
       </div>
+    </div>
 
-      <!-- Scan btn 2 -->
-      <button id="btn-scan2" class="btn-scan mb14 hidden" onclick="scan2()">🔍 Porovnať!</button>
+    <div class="gap">
+      <button class="btn btn-ghost" onclick="resetCmp()">↩ Vyskúšať iné porovnanie</button>
+      <button class="btn btn-ghost" onclick="goHome()">← Domov</button>
+    </div>
+  </div>
+</div>
 
-      <!-- Loading 2 -->
-      <div id="loading2" class="loading hidden">
-        <div class="loading-icons">
-          <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
-          <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🔍</span>
-          <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">📚</span>
-        </div>
-        <div class="loading-text">Hľadám druhého dinosaura…</div>
-      </div>
+<!-- ══════════ HISTORY ══════════ -->
+<div class="screen" id="s-history">
+  <div class="hdr">
+    <button class="btn-back" onclick="goHome()">← Domov</button>
+    <a class="logo" onclick="goHome()">Z<em>a</em>uri</a>
+    <div style="width:42px"></div>
+  </div>
+  <div class="wrap" style="padding-bottom:32px">
+    <div class="sec-title">🕐 Posledné objavy</div>
+    <div class="grid2" id="history-grid"></div>
+  </div>
+</div>
 
-      <!-- Not dino 2 -->
-      <div id="alert-notdino2" class="alert alert-warn hidden">
-        <div class="alert-icon">🤔</div>
-        <div class="alert-title">Toto nie je dinosaurus!</div>
-        <div class="alert-sub">Skús inú fotku. 🦕</div>
-      </div>
-
-      <!-- Compare results -->
-      <div id="cmp-results" class="hidden">
-        <div class="mini-cards">
-          <div class="mini-card mini-card-amber">
-            <img id="mc-img1" class="mini-card-img" src="" alt=""/>
-            <div id="mc-emoji1" style="font-size:2rem;margin-bottom:2px"></div>
-            <div id="mc-name1" class="mini-card-name-amber"></div>
-            <div id="mc-en1" class="mini-card-en"></div>
-            <button class="btn-roar-sm" style="background:linear-gradient(135deg,#d43b28,#b02619);box-shadow:0 4px 14px rgba(212,59,40,.5)" id="roar-btn1" onclick="roar(1)">🔊 Rev!</button>
-          </div>
-          <div class="mini-card mini-card-blue">
-            <img id="mc-img2" class="mini-card-img" src="" alt=""/>
-            <div id="mc-emoji2" style="font-size:2rem;margin-bottom:2px"></div>
-            <div id="mc-name2" class="mini-card-name-blue"></div>
-            <div id="mc-en2" class="mini-card-en"></div>
-            <button class="btn-roar-sm" style="background:linear-gradient(135deg,#2877d4,#1a5ab0);box-shadow:0 4px 14px rgba(40,119,212,.5)" id="roar-btn2" onclick="roar(2)">🔊 Rev!</button>
-          </div>
-        </div>
-
-        <div id="cmp-table" class="cmp-table"></div>
-
-        <div id="cmp-loading" class="loading hidden">
-          <div class="loading-icons">
-            <span class="loading-icon" style="animation:blink .85s ease-in-out 0s infinite">🦖</span>
-            <span class="loading-icon" style="animation:blink .85s ease-in-out .28s infinite">🆚</span>
-            <span class="loading-icon" style="animation:blink .85s ease-in-out .56s infinite">🦕</span>
-          </div>
-          <div class="loading-text">Porovnávam dinosaurov…</div>
-        </div>
-
-        <div id="cmp-summary" class="cmp-summary hidden">
-          <div class="cmp-summary-row">
-            <span class="cmp-summary-icon">🧠</span>
-            <div>
-              <div class="cmp-summary-title">Hlavné rozdiely:</div>
-              <div class="cmp-summary-text" id="cmp-summary-text"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Q&A compare -->
-        <div id="qa2" class="qa-wrap hidden">
-          <div class="qa-header">
-            <span class="qa-header-icon">💬</span>
-            <div>
-              <div class="qa-header-title">Opýtaj sa o oboch!</div>
-              <div class="qa-header-sub" id="qa2-sub"></div>
-            </div>
-          </div>
-          <div id="qa2-msgs" class="qa-msgs"></div>
-          <div class="qa-input-row">
-            <input id="qa2-input" class="qa-input" placeholder="Napr. Ktorý by vyhral súboj?" onkeydown="if(event.key==='Enter')askQ2()"/>
-            <button class="qa-send" onclick="askQ2()" id="qa2-btn">Pýtaj →</button>
-          </div>
-        </div>
-
-      </div><!-- /cmp-results -->
-
-      <div class="flex-col">
-        <button class="btn-ghost" onclick="startCompare()">↩ Vyskúšať iné porovnanie</button>
-        <button class="btn-ghost" onclick="resetAll()">← Začať odznova</button>
-      </div>
-
-    </div><!-- /view-compare -->
-
-  </div><!-- /wrap -->
-</div><!-- /app -->
+<!-- ══════════ FAVORITES ══════════ -->
+<div class="screen" id="s-favorites">
+  <div class="hdr">
+    <button class="btn-back" onclick="goHome()">← Domov</button>
+    <a class="logo" onclick="goHome()">Z<em>a</em>uri</a>
+    <div style="width:42px"></div>
+  </div>
+  <div class="wrap" style="padding-bottom:32px">
+    <div class="sec-title">⭐ Obľúbení dinosauri</div>
+    <div class="grid2" id="fav-grid"></div>
+  </div>
+</div>
 
 <script>
-// ─── State ────────────────────────────────────────────────────────────────────
-let dino1 = null, dino2 = null;
-let imgUrl1 = null, imgUrl2 = null;
-let imgData1 = null, imgData2 = null;
-let roaring1 = false, roaring2 = false;
-let factTimer = null;
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let D1=null,D2=null,url1=null,url2=null,img1=null,img2=null;
+let roaring1=false,roaring2=false,curAudio=null,factTmr=null,ldTmr=null,isFav=false;
 
-const FACTS = [
-  {key:"size",        icon:"📏", label:"Aký bol veľký?"},
-  {key:"location",    icon:"🗺️", label:"Kde žil?"},
-  {key:"period",      icon:"⏳", label:"Kedy žil?"},
-  {key:"diet",        icon:"🍖", label:"Čo jedol?"},
-  {key:"teeth",       icon:"🦷", label:"Aké mal zuby?"},
-  {key:"vision",      icon:"👁️",  label:"Aký mal zrak?"},
-  {key:"observation", icon:"🔭", label:"Čo rád sledoval?"},
-  {key:"fun_fact",    icon:"⚡", label:"Vedel si, že…"},
+const getR=()=>{try{return JSON.parse(localStorage.getItem('z_recent')||'[]')}catch{return[]}};
+const setR=a=>localStorage.setItem('z_recent',JSON.stringify(a.slice(0,20)));
+const getF=()=>{try{return JSON.parse(localStorage.getItem('z_favs')||'[]')}catch{return[]}};
+const setF=a=>localStorage.setItem('z_favs',JSON.stringify(a));
+
+// ══════════════════════════════════════════════
+// LOADING MESSAGES
+// ══════════════════════════════════════════════
+const LMS=[
+  ['🦕','Hmm… Zauri kontroluje dino stopy.'],
+  ['🔍','Overujem s Medzinárodnou Dino Asociáciou…'],
+  ['🦷','Pozerám na zuby, chvost a dino nohy…'],
+  ['🎓','Profesor Triceratops rozmýšľa…'],
+  ['📡','Dino radar pípá. Niečo sme našli.'],
+  ['🏛️','Konzultujem s múzeom prehistórie…'],
+  ['🦖','Analyzujem fosílie a stopy…'],
+  ['⚗️','Zauri laboratórium pracuje naplno!'],
+];
+let ldIdx=0;
+function startLoad(){
+  document.getElementById('overlay-loading').classList.add('on');
+  ldIdx=0;
+  const show=()=>{const[e,m]=LMS[ldIdx%LMS.length];document.getElementById('ld-emoji').textContent=e;document.getElementById('ld-msg').textContent=m;ldIdx++;};
+  show();ldTmr=setInterval(show,2200);
+}
+function stopLoad(){clearInterval(ldTmr);document.getElementById('overlay-loading').classList.remove('on');}
+
+// ══════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=document.getElementById(id);el.classList.add('active');
+  window.scrollTo(0,0);
+  if(id==='s-history')renderHistory();
+  if(id==='s-favorites')renderFavs();
+}
+function goHome(){renderRecent();go('s-home');}
+
+// ══════════════════════════════════════════════
+// IMAGE HANDLING
+// ══════════════════════════════════════════════
+function resize(file,cb){
+  const MAX=1024,r=new FileReader();
+  r.onload=e=>{const img=new Image();img.onload=()=>{
+    let w=img.width,h=img.height;
+    if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
+    const c=document.createElement('canvas');c.width=w;c.height=h;
+    c.getContext('2d').drawImage(img,0,0,w,h);
+    const d=c.toDataURL('image/jpeg',.85).split(',');
+    cb({base64:d[1],mediaType:'image/jpeg'});
+  };img.src=e.target.result;};
+  r.readAsDataURL(file);
+}
+function onFile1(inp){
+  const f=inp.files[0];if(!f)return;
+  url1=URL.createObjectURL(f);D1=null;
+  resize(f,d=>{img1=d;scan1();});
+  inp.value='';
+}
+function onFile2(inp){
+  const f=inp.files[0];if(!f)return;
+  url2=URL.createObjectURL(f);
+  document.getElementById('photo2').src=url2;
+  document.getElementById('cmp-preview').classList.remove('hidden');
+  document.getElementById('cmp-upload').classList.add('hidden');
+  resize(f,d=>{img2=d;});
+  inp.value='';
+}
+
+// ══════════════════════════════════════════════
+// API
+// ══════════════════════════════════════════════
+const PROMPT=`Si Zauri — priateľský a hravý dino sprievodca pre 4-ročné deti. Identifikuj dinosaura na obrázku.
+Odpovedaj IBA ako JSON (žiadny iný text, žiadne backticks):
+{"is_dinosaur":true,"confidence":"high|medium|low","name_sk":"bežný názov","name_en":"vedecký názov","emoji":"emoji","alternatives":[{"name_sk":"...","name_en":"...","emoji":"..."}],"roar_type":"deep|medium|light|chirpy","child":{"diet":"čo jedol, prirovnanie pre deti, max 2 vety","size":"veľkosť s prirovnaním ako auto/dom/autobus, 1 veta","features":"zuby/rohy/pancier/krk, max 2 vety hravé","speed":"rýchly alebo pomalý, prirovnanie, 1 veta","fun_fact":"prekvapujúca zaujímavosť, max 2 vety"},"parent":{"diet":"odbornejší popis stravy","size":"presné rozmery","period":"geologické obdobie + počet miliónov rokov","location":"kde na svete žil","fun_fact":"zaujímavosť pre rodiča"},"memory_question":{"question":"jednoduchá otázka pre dieťa","correct":"správna odpoveď","options":["možnosť1","možnosť2"]}}
+Ak nie je dinosaurus: {"is_dinosaur":false,"reason":"krátke vysvetlenie"}
+Pravidlá: Nikdy nepoužívaj grafické/násilné opisy. Vždy prirovnávaj k veciam ktoré deti poznajú (auto, dom, autobus, poschodový dom). roar_type: deep=veľký mäsožravec, medium=stredný, light=malý/bylinožravec, chirpy=vtáčí/malý. Alternatívy: 2 ak high, 3 ak medium/low.`;
+
+async function api(msgs,maxTok=1000){
+  const r=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:msgs,max_tokens:maxTok})});
+  const j=await r.json();
+  if(!r.ok)throw new Error(j.error||'Chyba');
+  return j.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+}
+
+// ══════════════════════════════════════════════
+// SCAN 1
+// ══════════════════════════════════════════════
+const FACTS=[
+  {icon:'📏',lbl:'Aký bol veľký?',key:'size'},
+  {icon:'🍖',lbl:'Čo jedol?',key:'diet'},
+  {icon:'🦷',lbl:'Ako sa bránil?',key:'features'},
+  {icon:'💨',lbl:'Bol rýchly?',key:'speed'},
+  {icon:'⚡',lbl:'Vedel si, že…',key:'fun_fact'},
+];
+const FALLBACKS=[
+  'Ups, tento dinosaurus sa schováva pred kamerou! Skúsme znova. 🙈',
+  'Potrebujeme viac dino stôp. Zuby? Rohy? Platne na chrbte?',
+  'Skúsme zachytiť hlavu aj telo — potom to Zauri spozná!',
 ];
 
-const CMP_FACTS = [
-  {key:"size",     icon:"📏", label:"Veľkosť"},
-  {key:"diet",     icon:"🍖", label:"Strava"},
-  {key:"teeth",    icon:"🦷", label:"Zuby"},
-  {key:"vision",   icon:"👁️",  label:"Zrak"},
-  {key:"period",   icon:"⏳", label:"Kedy žil"},
-  {key:"location", icon:"🗺️", label:"Kde žil"},
-];
-
-const SCAN_PROMPT = `Si detektív dinosaurov pre 4-ročné deti. Identifikuj dinosaura na obrázku.
-Odpovedaj IBA ako JSON (žiadny iný text, žiadne markdown backticks):
-{"is_dinosaur":true,"name_sk":"slovenský názov","name_en":"vedecký názov","emoji":"emoji","period":"kedy žil","diet":"čo jedol – prirovnanie pre deti, max 2 vety","teeth":"zuby – veľkosť s prirovnaním, max 2 vety","vision":"sila zraku s prirovnaním, max 2 vety","observation":"čo rád sledoval, kreatívne, max 2 vety","size":"veľkosť s prirovnaním napr. ako autobus, max 1 veta","location":"kde žil, max 1 veta","fun_fact":"prekvapujúca zaujímavosť, max 2 vety","roar_type":"deep alebo medium alebo light alebo chirpy"}
-Ak nie je dinosaurus: is_dinosaur:false. roar_type: deep=veľký mäsožravec, medium=stredný, light=malý/bylinožravec, chirpy=vtáčí.`;
-
-// ─── Utils ────────────────────────────────────────────────────────────────────
-function $(id){ return document.getElementById(id); }
-function show(id){ $(id).classList.remove("hidden"); }
-function hide(id){ $(id).classList.add("hidden"); }
-function showEl(el){ el.classList.remove("hidden"); }
-function hideEl(el){ el.classList.add("hidden"); }
-
-function init(){
-  if("serviceWorker" in navigator){
-    navigator.serviceWorker.register("/public/sw.js").catch(()=>{});
-  }
-}
-
-// ─── File handling ────────────────────────────────────────────────────────────
-function resizeImage(file, callback){
-  const MAX = 1024;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const img = new Image();
-    img.onload = () => {
-      let w = img.width, h = img.height;
-      if(w > MAX || h > MAX){
-        if(w > h){ h = Math.round(h * MAX / w); w = MAX; }
-        else { w = Math.round(w * MAX / h); h = MAX; }
-      }
-      const canvas = document.createElement("canvas");
-      canvas.width = w; canvas.height = h;
-      canvas.getContext("2d").drawImage(img, 0, 0, w, h);
-      const dataUrl = canvas.toDataURL("image/jpeg", 0.85);
-      const [hdr, b64] = dataUrl.split(",");
-      callback({ base64: b64, mediaType: "image/jpeg" });
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
-}
-
-function onFile1(input){
-  const file = input.files[0];
-  if(!file) return;
-  imgUrl1 = URL.createObjectURL(file);
-  $("preview1").src = imgUrl1;
-  hide("zone-upload");
-  show("preview-wrap1");
-  show("btn-scan1");
-  hide("alert-notdino"); hide("alert-error1"); hide("results1"); hide("loading1");
-  dino1 = null;
-  resizeImage(file, data => { imgData1 = data; });
-  input.value = "";
-}
-
-function onFile2(input){
-  const file = input.files[0];
-  if(!file) return;
-  imgUrl2 = URL.createObjectURL(file);
-  $("preview2").src = imgUrl2;
-  hide("zone-upload2");
-  show("preview-wrap2");
-  show("btn-scan2");
-  hide("alert-notdino2"); hide("cmp-results"); hide("loading2");
-  dino2 = null;
-  resizeImage(file, data => { imgData2 = data; });
-  input.value = "";
-}
-
-// ─── API call ─────────────────────────────────────────────────────────────────
-async function callAPI(messages, maxTokens=1000){
-  const res = await fetch("/api/proxy", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ messages, max_tokens: maxTokens })
-  });
-  const json = await res.json();
-  if(!res.ok){ throw new Error(json.error || "Chyba servera"); }
-  return json.content.filter(b=>b.type==="text").map(b=>b.text).join("");
-}
-
-// ─── Scan 1 ───────────────────────────────────────────────────────────────────
 async function scan1(){
-  if(!imgData1) return;
-  hide("btn-scan1"); hide("alert-notdino"); hide("alert-error1");
-  show("loading1");
-
-  try {
-    const raw = await callAPI([{role:"user", content:[
-      {type:"image", source:{type:"base64", media_type:imgData1.mediaType, data:imgData1.base64}},
-      {type:"text",  text:SCAN_PROMPT}
+  if(!img1)return;
+  startLoad();if(factTmr)clearInterval(factTmr);
+  document.getElementById('fact-list').innerHTML='';
+  document.getElementById('qa-msgs').innerHTML='';
+  try{
+    const raw=await api([{role:'user',content:[
+      {type:'image',source:{type:'base64',media_type:img1.mediaType,data:img1.base64}},
+      {type:'text',text:PROMPT}
     ]}]);
-    const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
-
-    if(!parsed.is_dinosaur){
-      hide("loading1"); show("alert-notdino"); show("btn-scan1"); return;
-    }
-
-    dino1 = parsed;
-    hide("loading1");
-    showResults1();
-
-  } catch(e){
-    console.error(e);
-    $("error-msg").textContent = e.message || JSON.stringify(e);
-    hide("loading1"); show("alert-error1"); show("btn-scan1");
-  }
+    const d=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    stopLoad();
+    if(!d.is_dinosaur){alert(FALLBACKS[Math.floor(Math.random()*FALLBACKS.length)]);return;}
+    D1=d;addRecent(D1);showResult();
+  }catch(e){stopLoad();alert('Ups, niečo sa pokazilo: '+(e.message||'Skús znova!'));}
 }
 
-function showResults1(){
-  $("res-emoji").textContent = dino1.emoji;
-  $("res-name-sk").textContent = dino1.name_sk;
-  $("res-name-en").textContent = dino1.name_en;
-  $("fact-cards").innerHTML = "";
-  show("results1");
+function showResult(){
+  // photo
+  const pw=document.getElementById('photo-wrap1');
+  if(url1){document.getElementById('photo1').src=url1;pw.style.display='block';}
+  else{pw.style.display='none';}
 
-  let i = 0;
-  factTimer = setInterval(()=>{
-    if(i >= FACTS.length){
-      clearInterval(factTimer);
-      show("btn-roar1"); show("btn-compare"); show("qa1");
+  // confidence
+  const cb=document.getElementById('conf-badge');
+  const ci={high:'✅ Zauri je si istý!',medium:'🤔 Zauri si myslí…',low:'💡 Zauri háda…'}[D1.confidence]||'Zauri hovorí…';
+  cb.textContent=ci;cb.className='photo-badge '+(D1.confidence||'');
+
+  // fav
+  isFav=getF().some(f=>f.name_en===D1.name_en);
+  document.getElementById('fav-btn').textContent=isFav?'❤️':'🤍';
+
+  // name
+  const ii={high:'Toto je…',medium:'Myslíme si, že je to…',low:'Zauri háda, že je to…'};
+  document.getElementById('name-intro').textContent=ii[D1.confidence]||'Toto vyzerá ako…';
+  document.getElementById('name-emoji').textContent=D1.emoji;
+  document.getElementById('name-sk').textContent=D1.name_sk;
+  document.getElementById('name-en').textContent=D1.name_en;
+
+  // alternatives
+  const as=document.getElementById('alts-section');
+  if(D1.alternatives&&D1.alternatives.length){
+    document.getElementById('alts-row').innerHTML=D1.alternatives.map(a=>`<div class="alt-chip"><span class="alt-emoji">${a.emoji}</span>${a.name_sk}</div>`).join('');
+    as.classList.remove('hidden');
+  }else{as.classList.add('hidden');}
+
+  // parent
+  document.getElementById('parent-body').innerHTML=`
+    <div class="prow"><strong>Strava:</strong> ${D1.parent.diet}</div>
+    <div class="prow"><strong>Veľkosť:</strong> ${D1.parent.size}</div>
+    <div class="prow"><strong>Kedy žil:</strong> ${D1.parent.period}</div>
+    <div class="prow"><strong>Kde žil:</strong> ${D1.parent.location}</div>
+    <div class="prow"><strong>Zaujímavosť:</strong> ${D1.parent.fun_fact}</div>
+    <div class="conf-note">💡 Istota rozpoznania: ${D1.confidence==='high'?'vysoká':D1.confidence==='medium'?'stredná':'nízka'}</div>`;
+
+  // chips
+  const chips=['Bol väčší ako ja?','Mal ostrý zrak?','Mal kamarátov?','Bol nebezpečný?','Kde spal?'];
+  document.getElementById('chips-row').innerHTML=chips.map(c=>`<button class="chip" onclick="useChip(this,'${c.replace(/'/g,"\\'")}')">  ${c}</button>`).join('');
+
+  // hide extras initially
+  document.getElementById('parent-box').style.display='none';
+  document.getElementById('chips-wrap').style.display='none';
+  document.getElementById('qa-box').style.display='none';
+  document.getElementById('roar-btn1').classList.add('hidden');
+  document.getElementById('result-actions').classList.add('hidden');
+
+  // fact cards one by one
+  const fl=document.getElementById('fact-list');fl.innerHTML='';
+  let i=0;
+  factTmr=setInterval(()=>{
+    if(i>=FACTS.length){
+      clearInterval(factTmr);
+      document.getElementById('roar-btn1').classList.remove('hidden');
+      document.getElementById('parent-box').style.display='block';
+      document.getElementById('chips-wrap').style.display='block';
+      document.getElementById('qa-box').style.display='block';
+      document.getElementById('result-actions').classList.remove('hidden');
+      showMemory();
       return;
     }
-    const f = FACTS[i];
-    if(dino1[f.key]){
-      const div = document.createElement("div");
-      div.className = "fc";
-      const btnId = "speak-"+i;
-      div.innerHTML = `
-        <div class="fc-row">
-          <span class="fc-icon">${f.icon}</span>
-          <div style="flex:1">
-            <div class="fc-label">${f.label}</div>
-            <div class="fc-text">${dino1[f.key]}</div>
-          </div>
-        </div>
-        <div class="fc-speak">
-          <button class="fc-speak-btn" id="${btnId}" onclick="speakText('${dino1[f.key].replace(/'/g,"\'")}', '${dino1.roar_type}', this)">
-            🔊 <span>Prečítať</span>
-          </button>
-        </div>`;
-      $("fact-cards").appendChild(div);
+    const f=FACTS[i];const txt=D1.child[f.key];
+    if(txt){
+      const card=document.createElement('div');
+      card.className='fcard';card.style.animationDelay=`${i*70}ms`;
+      const bid=`spk-${i}`;
+      card.innerHTML=`<div class="fcard-top"><span class="fcard-icon">${f.icon}</span><div><div class="fcard-lbl">${f.lbl}</div><div class="fcard-txt">${txt}</div></div></div><div class="fcard-bot"><button class="spk-btn" id="${bid}">🔊 Prečítať</button></div>`;
+      fl.appendChild(card);
+      const btn=document.getElementById(bid);
+      btn.addEventListener('click',function(){speak(txt,D1.roar_type,this);});
     }
     i++;
-  }, 230);
+  },280);
+
+  go('s-result');
 }
 
-// ─── Scan 2 ───────────────────────────────────────────────────────────────────
-async function scan2(){
-  if(!imgData2) return;
-  hide("btn-scan2"); hide("alert-notdino2");
-  show("loading2");
-
-  try {
-    const raw = await callAPI([{role:"user", content:[
-      {type:"image", source:{type:"base64", media_type:imgData2.mediaType, data:imgData2.base64}},
-      {type:"text",  text:SCAN_PROMPT}
-    ]}]);
-    const parsed = JSON.parse(raw.replace(/```json|```/g,"").trim());
-
-    if(!parsed.is_dinosaur){
-      hide("loading2"); show("alert-notdino2"); show("btn-scan2"); return;
-    }
-
-    dino2 = parsed;
-    hide("loading2");
-    showCmpResults();
-    generateComparison();
-
-  } catch(e){
-    console.error(e);
-    hide("loading2"); show("btn-scan2");
-  }
+// ══════════════════════════════════════════════
+// PARENT
+// ══════════════════════════════════════════════
+function toggleParent(){
+  const btn=document.getElementById('parent-btn');
+  const body=document.getElementById('parent-body');
+  btn.classList.toggle('open');body.classList.toggle('open');
 }
 
-function showCmpResults(){
-  $("mc-img1").src = imgUrl1; $("mc-img2").src = imgUrl2;
-  $("mc-emoji1").textContent = dino1.emoji; $("mc-emoji2").textContent = dino2.emoji;
-  $("mc-name1").textContent = dino1.name_sk; $("mc-name2").textContent = dino2.name_sk;
-  $("mc-en1").textContent = dino1.name_en; $("mc-en2").textContent = dino2.name_en;
-
-  // Build comparison table
-  let html = `<div class="cmp-col-headers"><div class="cmp-col-h-amber">${dino1.emoji} ${dino1.name_sk}</div><div class="cmp-col-h-blue">${dino2.emoji} ${dino2.name_sk}</div></div>`;
-  CMP_FACTS.forEach((f, idx) => {
-    const diff = dino1[f.key] !== dino2[f.key];
-    html += `<div class="cmp-fact-label"><span>${f.icon}</span>${f.label}</div>`;
-    html += `<div class="cmp-row" style="animation-delay:${idx*80}ms">`;
-    html += `<div class="cmp-cell-a${diff?" diff-a":""}">${dino1[f.key]||"—"}</div>`;
-    html += `<div class="cmp-cell-b${diff?" diff-b":""}">${dino2[f.key]||"—"}</div>`;
-    html += `</div>`;
+// ══════════════════════════════════════════════
+// MEMORY
+// ══════════════════════════════════════════════
+function showMemory(){
+  if(!D1?.memory_question)return;
+  const mq=D1.memory_question;
+  document.getElementById('mem-q').textContent=mq.question;
+  document.getElementById('mem-fb').textContent='';
+  document.getElementById('mem-fb').className='mem-fb';
+  document.getElementById('mem-cont').style.display='none';
+  const oo=document.getElementById('mem-opts');
+  oo.innerHTML='';
+  mq.options.forEach(opt=>{
+    const btn=document.createElement('button');
+    btn.className='mem-opt';btn.textContent=opt;
+    btn.addEventListener('click',function(){checkMem(opt,mq.correct,this,oo);});
+    oo.appendChild(btn);
   });
-  $("cmp-table").innerHTML = html;
-
-  $("qa2-sub").textContent = `Môžeš sa pýtať na ${dino1.name_sk} aj ${dino2.name_sk}`;
-  show("cmp-results");
+  setTimeout(()=>document.getElementById('overlay-memory').classList.add('on'),700);
 }
-
-async function generateComparison(){
-  show("cmp-loading");
-  try {
-    const txt = await callAPI([{role:"user", content:
-      `Porovnaj tieto dva dinosaury pre 4-ročné dieťa po slovensky. Zdôrazni 3 najväčšie rozdiely medzi nimi veselo a jednoducho. Použi prirovnania zo sveta detí. Max 4 vety.\nDinosaurus 1: ${dino1.name_sk} — veľkosť: ${dino1.size} — jedol: ${dino1.diet} — zuby: ${dino1.teeth}\nDinosaurus 2: ${dino2.name_sk} — veľkosť: ${dino2.size} — jedol: ${dino2.diet} — zuby: ${dino2.teeth}`
-    }], 350);
-    hide("cmp-loading");
-    $("cmp-summary-text").textContent = txt;
-    show("cmp-summary");
-    show("qa2");
-  } catch(e){
-    hide("cmp-loading");
+function checkMem(ans,correct,btn,oo){
+  oo.querySelectorAll('.mem-opt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('mem-fb');
+  if(ans===correct){
+    btn.classList.add('correct');
+    fb.textContent='🎉 Správne! Si skutočný dino prieskumník!';fb.className='mem-fb ok';
+  }else{
+    btn.classList.add('wrong');
+    oo.querySelectorAll('.mem-opt').forEach(b=>{if(b.textContent===correct)b.classList.add('correct');});
+    fb.textContent=`Skoro! Správna odpoveď je: ${correct}`;fb.className='mem-fb no';
   }
+  document.getElementById('mem-cont').style.display='block';
+}
+function closeMemory(){document.getElementById('overlay-memory').classList.remove('on');}
+
+// ══════════════════════════════════════════════
+// FAVORITES
+// ══════════════════════════════════════════════
+function toggleFav(){
+  if(!D1)return;
+  const favs=getF();const idx=favs.findIndex(f=>f.name_en===D1.name_en);
+  if(idx>=0){favs.splice(idx,1);isFav=false;}
+  else{favs.unshift({name_sk:D1.name_sk,name_en:D1.name_en,emoji:D1.emoji,date:new Date().toLocaleDateString('sk'),data:D1});isFav=true;}
+  setF(favs);
+  const btn=document.getElementById('fav-btn');
+  btn.textContent=isFav?'❤️':'🤍';
+  if(isFav){btn.style.animation='celebrate .45s ease';setTimeout(()=>btn.style.animation='',500);}
 }
 
-// ─── Q&A ─────────────────────────────────────────────────────────────────────
-async function askQ1(){
-  const q = $("qa1-input").value.trim(); if(!q||!dino1) return;
-  $("qa1-input").value = "";
-  $("qa1-btn").disabled = true; $("qa1-btn").textContent = "…";
-  addBubble("qa1-msgs", q, null);
-  try {
-    const a = await callAPI([{role:"user", content:
-      `Si kamarát dinosaurov a odpovedáš 4-ročnému dieťaťu po slovensky. Dinosaurus je: ${dino1.name_sk} (${dino1.name_en}). Odpovedaj jednoducho, veselo, max 3 vety, použi prirovnania zo sveta detí. Otázka dieťaťa: ${q}`
-    }], 300);
-    updateLastBubble("qa1-msgs", a);
-  } catch(e){ updateLastBubble("qa1-msgs", "Ups, niečo sa pokazilo!"); }
-  $("qa1-btn").disabled = false; $("qa1-btn").textContent = "Pýtaj →";
-  $("qa1").scrollIntoView({behavior:"smooth", block:"end"});
+// ══════════════════════════════════════════════
+// RECENT
+// ══════════════════════════════════════════════
+function addRecent(d){
+  const r=getR().filter(x=>x.name_en!==d.name_en);
+  r.unshift({name_sk:d.name_sk,name_en:d.name_en,emoji:d.emoji,date:new Date().toLocaleDateString('sk'),data:d});
+  setR(r);
+}
+function renderRecent(){
+  const r=getR();const c=document.getElementById('recent-row');
+  if(!r.length){c.innerHTML='<div class="empty">Zatiaľ žiadny. Čo čakáš? 🦕</div>';return;}
+  c.innerHTML=r.slice(0,8).map(x=>`<div class="recent-card" onclick="reopenDino('${x.name_en.replace(/'/g,"\\'")}')"><div class="recent-emoji">${x.emoji}</div><div class="recent-name">${x.name_sk}</div></div>`).join('');
+}
+function renderHistory(){
+  const r=getR();const g=document.getElementById('history-grid');
+  if(!r.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">Zatiaľ žiadne objavy. Odfot prvého dina! 🦕</div>';return;}
+  g.innerHTML=r.map(x=>`<div class="saved-card" onclick="reopenDino('${x.name_en.replace(/'/g,"\\'")}')"><div class="saved-emoji">${x.emoji}</div><div class="saved-name">${x.name_sk}</div><div class="saved-date">${x.date}</div></div>`).join('');
+}
+function renderFavs(){
+  const f=getF();const g=document.getElementById('fav-grid');
+  if(!f.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">Ešte žiadni obľúbenci. Klikni ❤️ pri dinosaurovi! 🦕</div>';return;}
+  g.innerHTML=f.map(x=>`<div class="saved-card" onclick="reopenDino('${x.name_en.replace(/'/g,"\\'")}')"><div class="saved-emoji">${x.emoji}</div><div class="saved-name">${x.name_sk}</div><div class="saved-date">${x.date}</div></div>`).join('');
+}
+function reopenDino(nameEn){
+  const found=getR().find(r=>r.name_en===nameEn)||getF().find(f=>f.name_en===nameEn);
+  if(found?.data){D1=found.data;url1=null;showResult();}
 }
 
-async function askQ2(){
-  const q = $("qa2-input").value.trim(); if(!q||!dino1||!dino2) return;
-  $("qa2-input").value = "";
-  $("qa2-btn").disabled = true; $("qa2-btn").textContent = "…";
-  addBubble("qa2-msgs", q, null);
-  try {
-    const a = await callAPI([{role:"user", content:
-      `Si kamarát dinosaurov a odpovedáš 4-ročnému dieťaťu po slovensky. Porovnávame: ${dino1.name_sk} a ${dino2.name_sk}. Odpovedaj jednoducho, veselo, max 3 vety. Otázka: ${q}`
-    }], 300);
-    updateLastBubble("qa2-msgs", a);
-  } catch(e){ updateLastBubble("qa2-msgs", "Ups, niečo sa pokazilo!"); }
-  $("qa2-btn").disabled = false; $("qa2-btn").textContent = "Pýtaj →";
-  $("qa2").scrollIntoView({behavior:"smooth", block:"end"});
-}
-
-function addBubble(containerId, q, a){
-  const wrap = document.createElement("div");
-  wrap.innerHTML = `<div class="bubble-q">🧒 ${q}</div><div class="bubble-a" id="bubble-${Date.now()}">${a===null?"🦖 …":"🦖 "+a}</div>`;
-  $(containerId).appendChild(wrap);
-}
-function updateLastBubble(containerId, a){
-  const bubbles = $(containerId).querySelectorAll(".bubble-a");
-  if(bubbles.length) bubbles[bubbles.length-1].textContent = "🦖 " + a;
-}
-
-// ─── TTS ──────────────────────────────────────────────────────────────────────
-let currentAudio = null;
-
-async function speakText(text, roar_type, btnEl) {
-  // Stop any playing audio
-  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
-
-  // If same button is playing, just stop
-  if (btnEl.classList.contains("playing")) {
-    btnEl.classList.remove("playing");
-    btnEl.innerHTML = '🔊 <span>Prečítať</span>';
-    return;
-  }
-
-  // Reset all other buttons
-  document.querySelectorAll(".fc-speak-btn.playing").forEach(b => {
-    b.classList.remove("playing");
-    b.innerHTML = '🔊 <span>Prečítať</span>';
-  });
-
-  btnEl.classList.add("loading");
-  btnEl.innerHTML = '<div class="wave"><span></span><span></span><span></span><span></span></div> <span>Načítavam…</span>';
-
-  try {
-    const res = await fetch("/api/speak", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, roar_type: roar_type || "deep" })
-    });
-    if (!res.ok) throw new Error("Chyba");
-    const blob = await res.blob();
-    const url = URL.createObjectURL(blob);
-    currentAudio = new Audio(url);
-    currentAudio.play();
-    btnEl.classList.remove("loading");
-    btnEl.classList.add("playing");
-    btnEl.innerHTML = '<div class="wave"><span></span><span></span><span></span><span></span></div> <span>Hrá…</span>';
-    currentAudio.onended = () => {
-      btnEl.classList.remove("playing");
-      btnEl.innerHTML = '🔊 <span>Prečítať</span>';
-      currentAudio = null;
-    };
-  } catch(e) {
-    btnEl.classList.remove("loading");
-    btnEl.innerHTML = '🔊 <span>Prečítať</span>';
-  }
-}
-
-// ─── Roar ─────────────────────────────────────────────────────────────────────
-function roar(which){
-  const d = which===1 ? dino1 : dino2;
-  const isRoaring = which===1 ? roaring1 : roaring2;
-  const btnId = which===1 ? "btn-roar1" : "roar-btn2";
-  const btn1Id = which===1 ? "btn-roar1" : "roar-btn1";
-  if(!d || isRoaring) return;
-
-  const type = d.roar_type || "deep";
-  const dur = playRoar(type);
-  const btn = $(btnId);
-
-  if(which===1){ roaring1=true; }else{ roaring2=true; }
-  btn.classList.add("roaring");
-  btn.textContent = "🦖 RRRAAAARGH!!!";
-  setTimeout(()=>{
-    if(which===1){ roaring1=false; }else{ roaring2=false; }
-    btn.classList.remove("roaring");
-    btn.textContent = which===1 ? "🔊 Počuj, ako revie!" : "🔊 Rev!";
-  }, dur+200);
-}
-
-function playRoar(type){
+// ══════════════════════════════════════════════
+// Q&A
+// ══════════════════════════════════════════════
+function useChip(el,q){document.getElementById('qa-inp').value=q;sendQ();}
+async function sendQ(){
+  const inp=document.getElementById('qa-inp');const q=inp.value.trim();if(!q||!D1)return;
+  inp.value='';
+  const msgs=document.getElementById('qa-msgs');
+  const qd=document.createElement('div');qd.className='qa-q';qd.textContent=q;msgs.appendChild(qd);
+  const ad=document.createElement('div');ad.className='qa-a';ad.textContent='🦕 …';msgs.appendChild(ad);
+  msgs.scrollTop=msgs.scrollHeight;
+  const s=document.getElementById('qa-send');s.disabled=true;
   try{
-    const ctx=new(window.AudioContext||window.webkitAudioContext)();
-    const t=ctx.currentTime;
-    const cfg={deep:{f:48,d:3.4,v:.32},medium:{f:95,d:2.6,v:.27},light:{f:165,d:2.0,v:.23},chirpy:{f:320,d:1.4,v:.20}}[type]||{f:48,d:3.4,v:.32};
-    const makeWS=a=>{const ws=ctx.createWaveShaper(),c=new Float32Array(256);for(let i=0;i<256;i++){const x=(i*2)/256-1;c[i]=(Math.PI+a)*x/(Math.PI+a*Math.abs(x));}ws.curve=c;return ws;};
-    [[1,"sawtooth"],[1.5,"sawtooth"],[2,"square"],[2.9,"sawtooth"],[4.1,"square"],[0.5,"sine"]].forEach(([h,wt],i)=>{
-      const osc=ctx.createOscillator(),g=ctx.createGain(),ws=makeWS(150-i*15);
-      osc.type=wt;osc.frequency.setValueAtTime(cfg.f*h,t);osc.frequency.linearRampToValueAtTime(cfg.f*h*.68,t+cfg.d);
+    const a=await api([{role:'user',content:`Si Zauri — priateľský dino sprievodca. Odpovedáš 4-ročnému dieťaťu po slovensky. Dinosaurus: ${D1.name_sk} (${D1.name_en}). Odpovedaj jednoducho, hravо, max 2 krátke vety. Použi prirovnania (auto, dom, autobus). Nikdy nepoužívaj grafické opisy. Otázka: ${q}`}],200);
+    ad.textContent='🦕 '+a;
+  }catch(e){ad.textContent='🦕 Ups, skús znova!';}
+  s.disabled=false;msgs.scrollTop=msgs.scrollHeight;
+}
+async function sendCmpQ(){
+  const inp=document.getElementById('cmp-qa-inp');const q=inp.value.trim();if(!q||!D1||!D2)return;
+  inp.value='';
+  const msgs=document.getElementById('cmp-qa-msgs');
+  const qd=document.createElement('div');qd.className='qa-q';qd.textContent=q;msgs.appendChild(qd);
+  const ad=document.createElement('div');ad.className='qa-a';ad.textContent='🦕 …';msgs.appendChild(ad);
+  const s=document.getElementById('cmp-qa-send');s.disabled=true;
+  try{
+    const a=await api([{role:'user',content:`Si Zauri. Porovnávame ${D1.name_sk} a ${D2.name_sk}. Odpovedaj 4-ročnému dieťaťu po slovensky, jednoducho, max 2 vety. Otázka: ${q}`}],200);
+    ad.textContent='🦕 '+a;
+  }catch(e){ad.textContent='🦕 Ups, skús znova!';}
+  s.disabled=false;
+}
+
+// ══════════════════════════════════════════════
+// COMPARE
+// ══════════════════════════════════════════════
+function startCmp(){
+  document.getElementById('cmp-e1').textContent=D1.emoji;
+  document.getElementById('cmp-n1').textContent=D1.name_sk;
+  resetCmp();go('s-compare');
+}
+function resetCmp(){
+  D2=null;url2=null;img2=null;
+  document.getElementById('cmp-upload').classList.remove('hidden');
+  document.getElementById('cmp-preview').classList.add('hidden');
+  document.getElementById('cmp-results').classList.add('hidden');
+  document.getElementById('cmp-sum').classList.add('hidden');
+  document.getElementById('cmp-qa').classList.add('hidden');
+  document.getElementById('cmp-rows').innerHTML='';
+  document.getElementById('cmp-qa-msgs').innerHTML='';
+  document.getElementById('cmp-e2').textContent='❓';
+  document.getElementById('cmp-n2').textContent='Kto?';
+}
+async function scanCmp(){
+  if(!img2)return;
+  document.getElementById('btn-cmp').disabled=true;
+  startLoad();
+  try{
+    const raw=await api([{role:'user',content:[
+      {type:'image',source:{type:'base64',media_type:img2.mediaType,data:img2.base64}},
+      {type:'text',text:PROMPT}
+    ]}]);
+    const d=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    stopLoad();
+    if(!d.is_dinosaur){alert('Toto nie je dinosaurus! Skús inú fotku.');document.getElementById('btn-cmp').disabled=false;return;}
+    D2=d;
+    document.getElementById('cmp-e2').textContent=D2.emoji;
+    document.getElementById('cmp-n2').textContent=D2.name_sk;
+    showCmpResults();
+    genCmpSummary();
+  }catch(e){stopLoad();document.getElementById('btn-cmp').disabled=false;}
+}
+function showCmpResults(){
+  document.getElementById('mc-img1').src=url1||'';
+  document.getElementById('mc-img2').src=url2;
+  document.getElementById('mc-e1').textContent=D1.emoji;document.getElementById('mc-e2').textContent=D2.emoji;
+  document.getElementById('mc-n1').textContent=D1.name_sk;document.getElementById('mc-n2').textContent=D2.name_sk;
+  const rows=document.getElementById('cmp-rows');
+  rows.innerHTML=`<div class="cmp-col-hdrs"><div style="font-family:'Fredoka',cursive;font-size:.9rem;color:var(--orange-d)">${D1.emoji} ${D1.name_sk}</div><div style="font-family:'Fredoka',cursive;font-size:.9rem;color:#4A7DA7">${D2.emoji} ${D2.name_sk}</div></div>`;
+  const cfs=[{icon:'📏',lbl:'Veľkosť',k:'size'},{icon:'🍖',lbl:'Strava',k:'diet'},{icon:'🦷',lbl:'Zbrane',k:'features'},{icon:'💨',lbl:'Rýchlosť',k:'speed'}];
+  cfs.forEach((f,i)=>{
+    const v1=D1.child[f.k]||'—',v2=D2.child[f.k]||'—',diff=v1!==v2;
+    rows.innerHTML+=`<div class="cmp-fact-lbl">${f.icon} ${f.lbl}</div><div class="cmp-row" style="animation-delay:${i*90}ms"><div class="cmp-a${diff?' diff':''}">${v1}</div><div class="cmp-b${diff?' diff':''}">${v2}</div></div>`;
+  });
+  document.getElementById('cmp-results').classList.remove('hidden');
+}
+async function genCmpSummary(){
+  try{
+    const txt=await api([{role:'user',content:`Si Zauri. Porovnaj ${D1.name_sk} a ${D2.name_sk} pre 4-ročné dieťa po slovensky. Zdôrazni 2-3 hlavné rozdiely veselo. Použi prirovnania (auto, dom, autobus). Max 3 vety.`}],250);
+    document.getElementById('cmp-sum-txt').textContent=txt;
+    document.getElementById('cmp-sum').classList.remove('hidden');
+    document.getElementById('cmp-qa').classList.remove('hidden');
+  }catch(e){}
+}
+
+// ══════════════════════════════════════════════
+// TTS
+// ══════════════════════════════════════════════
+async function speak(txt,rt,btn){
+  if(curAudio){curAudio.pause();curAudio=null;}
+  if(btn.classList.contains('playing')){btn.classList.remove('playing');btn.innerHTML='🔊 Prečítať';return;}
+  document.querySelectorAll('.spk-btn.playing').forEach(b=>{b.classList.remove('playing');b.innerHTML='🔊 Prečítať';});
+  btn.classList.add('loading');btn.innerHTML='<div class="wv"><span></span><span></span><span></span></div> Načítavam…';
+  try{
+    const r=await fetch('/api/speak',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:txt,roar_type:rt||'deep'})});
+    if(!r.ok)throw new Error();
+    const blob=await r.blob();const u=URL.createObjectURL(blob);
+    curAudio=new Audio(u);curAudio.play();
+    btn.classList.remove('loading');btn.classList.add('playing');btn.innerHTML='<div class="wv"><span></span><span></span><span></span></div> Hrá…';
+    curAudio.onended=()=>{btn.classList.remove('playing');btn.innerHTML='🔊 Prečítať';curAudio=null;};
+  }catch(e){btn.classList.remove('loading');btn.innerHTML='🔊 Prečítať';}
+}
+
+// ══════════════════════════════════════════════
+// ROAR
+// ══════════════════════════════════════════════
+function playRoar(t){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();const tm=ctx.currentTime;
+    const cfg={deep:{f:48,d:3.4,v:.32},medium:{f:95,d:2.6,v:.27},light:{f:165,d:2,v:.23},chirpy:{f:320,d:1.4,v:.2}}[t]||{f:48,d:3.4,v:.32};
+    const mws=a=>{const ws=ctx.createWaveShaper(),c=new Float32Array(256);for(let i=0;i<256;i++){const x=i*2/256-1;c[i]=(Math.PI+a)*x/(Math.PI+a*Math.abs(x));}ws.curve=c;return ws;};
+    [[1,'sawtooth'],[1.5,'sawtooth'],[2,'square'],[2.9,'sawtooth'],[4.1,'square'],[.5,'sine']].forEach(([h,wt],i)=>{
+      const o=ctx.createOscillator(),g=ctx.createGain(),ws=mws(150-i*15);
+      o.type=wt;o.frequency.setValueAtTime(cfg.f*h,tm);o.frequency.linearRampToValueAtTime(cfg.f*h*.68,tm+cfg.d);
       const v=cfg.v/Math.pow(i+1,.58);
-      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.12);g.gain.setValueAtTime(v,t+cfg.d*.62);g.gain.exponentialRampToValueAtTime(.001,t+cfg.d);
-      osc.connect(ws);ws.connect(g);g.connect(ctx.destination);osc.start(t);osc.stop(t+cfg.d);
+      g.gain.setValueAtTime(0,tm);g.gain.linearRampToValueAtTime(v,tm+.12);g.gain.setValueAtTime(v,tm+cfg.d*.62);g.gain.exponentialRampToValueAtTime(.001,tm+cfg.d);
+      o.connect(ws);ws.connect(g);g.connect(ctx.destination);o.start(tm);o.stop(tm+cfg.d);
     });
     return cfg.d*1000;
   }catch(e){return 2500;}
 }
-
-// ─── Navigation ───────────────────────────────────────────────────────────────
-function startCompare(){
-  hide("view-single"); show("view-compare");
-  $("header-title").textContent = "🆚 POROVNÁVAČ";
-  $("header-sub").textContent = (dino1?.name_sk||"?") + " vs kto?";
-  // Reset dino2 side
-  hide("preview-wrap2"); hide("btn-scan2"); hide("cmp-results"); hide("alert-notdino2"); hide("loading2");
-  show("zone-upload2");
-  dino2=null; imgUrl2=null; imgData2=null;
-  $("cmp-img1").src = imgUrl1;
-  $("cmp-emoji1").textContent = dino1?.emoji||"";
-  $("cmp-name1").textContent = dino1?.name_sk||"";
-  $("cmp-en1").textContent = dino1?.name_en||"";
-  $("qa2-msgs").innerHTML = "";
-  $("cmp-table").innerHTML = "";
-  hide("cmp-summary"); hide("qa2");
-  window.scrollTo(0,0);
+function roar(which){
+  const d=which===1?D1:D2;if(!d)return;
+  const ir=which===1?roaring1:roaring2;if(ir)return;
+  const cmpActive=document.getElementById('s-compare').classList.contains('active');
+  let btnId=which===1?(cmpActive?'roar-cmp1':'roar-btn1'):'roar-cmp2';
+  const btn=document.getElementById(btnId);if(!btn)return;
+  const dur=playRoar(d.roar_type);
+  if(which===1)roaring1=true;else roaring2=true;
+  btn.classList.add('roaring');
+  const orig=btn.innerHTML;btn.innerHTML='🦖 RRRAAAARGH!!!';
+  setTimeout(()=>{if(which===1)roaring1=false;else roaring2=false;btn.classList.remove('roaring');btn.innerHTML=orig;},dur+200);
 }
 
-function resetAll(){
-  dino1=null; dino2=null; imgUrl1=null; imgUrl2=null; imgData1=null; imgData2=null;
-  roaring1=false; roaring2=false;
-  if(factTimer) clearInterval(factTimer);
-
-  hide("view-compare"); show("view-single");
-  $("header-title").textContent = "DINO DETEKTÍV";
-  $("header-sub").textContent = "Odfotí dinosaura → zistí všetko o ňom!";
-
-  // Reset single
-  hide("preview-wrap1"); hide("btn-scan1"); hide("loading1");
-  hide("alert-notdino"); hide("alert-error1"); hide("results1");
-  hide("btn-roar1"); hide("btn-compare"); hide("qa1");
-  show("zone-upload");
-  $("fact-cards").innerHTML = "";
-  $("qa1-msgs").innerHTML = "";
-  $("qa1-input").value = "";
-
-  window.scrollTo(0,0);
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+function init(){
+  renderRecent();
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('/public/sw.js').catch(()=>{});
 }
-
 init();
 </script>
 </body>

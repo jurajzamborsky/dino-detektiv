@@ -1,6 +1,5 @@
-const CACHE = "dino-v2";
-const ASSETS = ["/app", "/public/app.html", "/public/manifest.json"];
-
+const CACHE = "zauri-v1";
+const ASSETS = ["/app", "/public/manifest.json"];
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS).catch(() => {})));
   self.skipWaiting();
