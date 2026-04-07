@@ -853,8 +853,60 @@ async function speak(txt,rt,btn){
 }
 
 // ══════════════════════════════════════════════
-// ROAR
+// ROAR — špecifické zvuky + syntetický fallback
 // ══════════════════════════════════════════════
+const DINO_SOUNDS_BASE='/api/roar?file=';
+const TREX_SOUNDS=['Trex11.wav','Trex21.wav','Trex31.wav','Trex41.wav'];
+const DINO_SOUNDS_MAP={
+  'allosaurus':'Allosaurus1.wav',
+  'triceratops':'Baby_triceratops1.wav',
+  'brachiosaurus':'Brachiosaurus1.wav',
+  'brontosaurus':'Brontosaurus11.wav',
+  'apatosaurus':'Brontosaurus11.wav',
+  'carnotaurus':'Carnotaurus11.wav',
+  'compsognathus':'Compsognathus1.wav',
+  'ceratosaurus':'Ceratosaurus1.mp3',
+  'desmatosuchus':'Desmatosuchus1.wav',
+  'dilophosaurus':'Dilophosaurus1.wav',
+  'dreadnoughtus':'Dreadnoughtus1.mp3',
+  'dromaeosaurus':'Dromaeosaurus1.wav',
+  'eoraptor':'Eoraptor1.wav',
+  'eudimorphodon':'Eudimorphodon1.mp3',
+  'europasaurus':'Europasaurus1.mp3',
+  'gallimimus':'Gallimimus1.wav',
+  'guanlong':'Guanlong1.wav',
+  'huayangosaurus':'Huayangosaurus1.mp3',
+  'megalosaurus':'Megalosaurus1.mp3',
+  'microraptor':'Microraptor1.mp3',
+  'nigersaurus':'Nigersaurus1.wav',
+  'pachycephalosaurus':'Pachycephalosaurus1.wav',
+  'parasaurolophus':'Parasaurolophus1.wav',
+  'pisanosaurus':'Pisanosaurus1.mp3',
+  'pterodactylus':'Pterodactylus1.mp3',
+  'pterodactyl':'Pterodactylus1.mp3',
+  'pteranodon':'Pterodactylus1.mp3',
+  'stegosaurus':'Stegosaurus1.wav',
+  'tarchia':'Tarchia1.wav',
+  'torosaurus':'Torosaurus1.wav',
+  'tyrannosaurus':'__trex__',
+  'tyrannosaurus rex':'__trex__',
+  't-rex':'__trex__',
+  't. rex':'__trex__',
+  'velociraptor':'Velociraptor1.wav',
+  'raptor':'Velociraptor1.wav',
+};
+function getDinoSoundUrl(d){
+  const resolve=v=>DINO_SOUNDS_BASE+(v==='__trex__'
+    ?TREX_SOUNDS[Math.floor(Math.random()*TREX_SOUNDS.length)]:v);
+  const raw=(d.name_en||'').toLowerCase().trim();
+  if(DINO_SOUNDS_MAP[raw])return resolve(DINO_SOUNDS_MAP[raw]);
+  const genus=raw.split(/\s+/)[0];
+  if(DINO_SOUNDS_MAP[genus])return resolve(DINO_SOUNDS_MAP[genus]);
+  for(const [k,v] of Object.entries(DINO_SOUNDS_MAP)){
+    if(raw.includes(k)||k.includes(raw))return resolve(v);
+  }
+  return null;
+}
 function playRoar(t){
   try{
     const ctx=new(window.AudioContext||window.webkitAudioContext)();const tm=ctx.currentTime;
@@ -870,17 +922,34 @@ function playRoar(t){
     return cfg.d*1000;
   }catch(e){return 2500;}
 }
-function roar(which){
+function roarFinish(which,btn,orig){
+  if(which===1)roaring1=false;else roaring2=false;
+  btn.classList.remove('roaring');btn.innerHTML=orig;
+}
+async function roar(which){
   const d=which===1?D1:D2;if(!d)return;
   const ir=which===1?roaring1:roaring2;if(ir)return;
   const cmpActive=document.getElementById('s-compare').classList.contains('active');
   let btnId=which===1?(cmpActive?'roar-cmp1':'roar-btn1'):'roar-cmp2';
   const btn=document.getElementById(btnId);if(!btn)return;
-  const dur=playRoar(d.roar_type);
   if(which===1)roaring1=true;else roaring2=true;
   btn.classList.add('roaring');
   const orig=btn.innerHTML;btn.innerHTML='🦖 RRRAAAARGH!!!';
-  setTimeout(()=>{if(which===1)roaring1=false;else roaring2=false;btn.classList.remove('roaring');btn.innerHTML=orig;},dur+200);
+  const url=getDinoSoundUrl(d);
+  if(url){
+    try{
+      await new Promise((res,rej)=>{
+        const a=new Audio(url);
+        const timeout=setTimeout(()=>{a.pause();rej(new Error('timeout'));},8000);
+        a.onended=()=>{clearTimeout(timeout);res();};
+        a.onerror=()=>{clearTimeout(timeout);rej(new Error('load error'));};
+        a.play().catch(rej);
+      });
+      roarFinish(which,btn,orig);return;
+    }catch(e){/* fallback */}
+  }
+  const dur=playRoar(d.roar_type);
+  setTimeout(()=>roarFinish(which,btn,orig),dur+200);
 }
 
 // ══════════════════════════════════════════════
